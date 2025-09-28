@@ -7,7 +7,13 @@
         <small class="text-muted">{{ $code->tanggal->format('d M Y') }}</small>
     </div>
 
-    <div class="card shadow-lg rounded-4 p-4 d-flex align-items-center justify-content-center">
+    <div class="card shadow-lg rounded-4 p-4 d-flex flex-column align-items-center justify-content-center">
+        {{-- QR Code --}}
+        <div class="mb-3">
+            {!! QrCode::size(220)->generate(url('/http://127.0.0.1:8000/login/siswa/'.$code->kode)) !!}
+        </div>
+
+        {{-- Kode teks --}}
         <p class="mb-0" style="font-size:2em; font-weight:bold; letter-spacing:2px;">
             {{ $code->kode }}
         </p>

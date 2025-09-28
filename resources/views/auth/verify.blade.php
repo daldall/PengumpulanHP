@@ -25,7 +25,7 @@
 
                     <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                         @csrf
-                        <button type="submit" class="btn fw-bold w-100" 
+                        <button type="submit" class="btn fw-bold w-100"
                                 style="background-color:#0d6efd; color:#fff; border:none; border-radius:0.5rem; transition:0.3s;"
                                 onmouseover="this.style.backgroundColor='#0b5ed7';"
                                 onmouseout="this.style.backgroundColor='#0d6efd';">
