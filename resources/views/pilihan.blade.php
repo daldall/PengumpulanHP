@@ -1,33 +1,81 @@
 @extends('layouts.app2')
 
 @section('content')
-<div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh; font-family:'Poppins', sans-serif;">
-    <div class="row w-100 justify-content-center">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-        {{-- Pilih Siswa --}}
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-lg border-0 rounded-4 text-center p-4" style="cursor:pointer;" onclick="window.location='{{ route('auth.login.siswa') }}'">
-                <div class="mb-3">
-                    <i class="fas fa-user-graduate fa-3x text-primary"></i>
+    /* Container Card */
+    .main-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-option {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        text-align: center;
+        padding: 40px 20px;
+        transition: transform 0.2s ease-in-out;
+        cursor: pointer;
+        color: white;
+        min-width: 220px;
+    }
+    .card-option:hover {
+        transform: translateY(-5px);
+    }
+    .card-option h4 {
+        margin-top: 15px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .card-option button {
+        margin-top: 15px;
+        width: 80%;
+    }
+
+    @media(max-width: 768px){
+        .card-option {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+
+{{-- Content --}}
+<div class="main-content">
+    <div class="container text-center">
+        <div class="row justify-content-center g-4">
+
+            {{-- Pilih Siswa --}}
+            <div class="col-md-4 col-10">
+                <div class="card-option" onclick="window.location='{{ route('auth.login.siswa') }}'">
+                    <i class="fas fa-user-graduate fa-3x text-white"></i>
+                    <h4>Siswa</h4>
+                    <button class="btn btn-primary">Masuk</button>
                 </div>
-                <h4 class="fw-bold">Siswa</h4>
-                <p class="text-muted">Login/Register untuk siswa</p>
-                <button class="btn btn-primary w-75 mt-2">Masuk</button>
             </div>
-        </div>
 
-        {{-- Pilih Guru --}}
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-lg border-0 rounded-4 text-center p-4" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#guruPasswordModal">
-                <div class="mb-3">
-                    <i class="fas fa-chalkboard-teacher fa-3x text-warning"></i>
+            {{-- Pilih Guru --}}
+            <div class="col-md-4 col-10">
+                <div class="card-option" data-bs-toggle="modal" data-bs-target="#guruPasswordModal">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-white"></i>
+                    <h4>Guru</h4>
+                    <button class="btn btn-primary">Masuk</button>
                 </div>
-                <h4 class="fw-bold">Guru</h4>
-                <p class="text-muted">Login/Register untuk guru</p>
-                <button class="btn btn-warning w-75 mt-2">Masuk</button>
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
 
@@ -46,7 +94,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-warning">Masuk</button>
+          <button type="submit" class="btn btn-primary">Masuk</button>
         </div>
       </form>
     </div>
