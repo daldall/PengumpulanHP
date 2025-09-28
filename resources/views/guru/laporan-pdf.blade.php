@@ -58,6 +58,7 @@
                 <th class="text-center">No</th>
                 <th>NIS</th>
                 <th>Nama Siswa</th>
+                <th>Kelas</th>
                 <th class="text-center">Jam Kumpul</th>
                 <th class="text-center">Metode Kumpul</th>
                 <th class="text-center">Jam Ambil</th>
@@ -71,6 +72,7 @@
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ $data['nis'] }}</td>
                 <td>{{ $data['nama'] }}</td>
+                <td>{{ $data['kelas'] }}</td>
                 <td class="text-center">{{ $data['jam_kumpul'] }}</td>
                 <td class="text-center">{{ $data['metode_kumpul'] }}</td>
                 <td class="text-center">{{ $data['jam_ambil'] }}</td>

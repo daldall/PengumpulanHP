@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">Kode Pengembalian HP</div>
@@ -84,25 +84,18 @@
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <div class="card">
-                                <div class="card-header">Menu Utama</div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <a href="{{ route('guru.monitoring') }}" class="btn btn-outline-primary btn-block mb-2">
-                                                <i class="fas fa-eye"></i> Monitoring Siswa
-                                            </a>
-                                        </div>
                                         <div class="col-md-3">
                                             <a href="{{ route('guru.export-pdf') }}" class="btn btn-outline-success btn-block mb-2">
                                                 <i class="fas fa-download"></i> Export PDF
                                             </a>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <button type="button" class="btn btn-outline-warning btn-block mb-2" data-toggle="modal" data-target="#inputManualModal">
-                                                <i class="fas fa-keyboard"></i> Input Manual
-                                            </button>
-                                        </div>
-                                    </div>
+                                </div>
+                                        <div class="col-md-3">
+                                        <a href="{{ route('guru.export-excel') }}" class="btn btn-success">
+    Export Excel
+</a>
+
                                 </div>
                             </div>
                         </div>
