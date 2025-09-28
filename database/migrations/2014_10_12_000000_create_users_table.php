@@ -12,9 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nis')->nullable()->unique();
             $table->string('name');
- HEAD
             $table->string('kelas')->nullable();
- main
             $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
