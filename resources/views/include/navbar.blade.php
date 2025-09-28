@@ -1,3 +1,5 @@
+ <div class="mb-4">
+     {{-- Navbar --}}
  <nav class="navbar navbar-expand-md shadow-sm" style=" background: linear-gradient(135deg, #0d6efd, #6610f2);">
             <div class="container">
                 {{-- Logo + Nama Sekolah --}}
@@ -80,3 +82,4 @@
                 </div>
             </div>
         </nav>
+</div>
