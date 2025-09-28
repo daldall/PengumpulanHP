@@ -9,7 +9,7 @@ class SiswaMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || !auth()->user()->isSiswa()) {
+        if (!auth()->check() || auth()->user()->role !== 'siswa') {
             abort(403, 'Unauthorized');
         }
 

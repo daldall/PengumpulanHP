@@ -9,7 +9,7 @@ class GuruMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || !auth()->user()->isGuru()) {
+        if (!auth()->check() || auth()->user()->role !== 'guru') {
             abort(403, 'Unauthorized');
         }
 

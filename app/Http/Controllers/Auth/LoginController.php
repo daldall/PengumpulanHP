@@ -39,9 +39,10 @@ class LoginController extends Controller
 
     protected function redirectTo()
     {
-        if (auth()->user()->isGuru()) {
+        if (auth()->user()->role === 'guru') {
             return '/guru/dashboard';
         }
         return '/siswa/dashboard';
     }
+
 }

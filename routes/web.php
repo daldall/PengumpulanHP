@@ -4,6 +4,8 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
+
 
 // Redirect root ke halaman pilihan
 Route::get('/', function () {

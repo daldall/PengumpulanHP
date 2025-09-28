@@ -13,9 +13,10 @@ class HomeController extends Controller
 
     public function index()
     {
-        if (auth()->user()->isGuru()) {
+        if (auth()->user()->role === 'guru') {
             return redirect()->route('guru.dashboard');
         }
         return redirect()->route('siswa.dashboard');
     }
+
 }
