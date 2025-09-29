@@ -62,7 +62,7 @@ class GuruController extends Controller
             $aktifSampai = '22:00:00';
         } else {
             $dayOfWeek = $tanggal->dayOfWeek;
-            $aktifDari = in_array($dayOfWeek, [1, 2, 3]) ? '15:00:00' : '14:00:00';
+            $aktifDari = in_array($dayOfWeek, [1, 2, 3]) ? '06:00:00' : '06:00:00';
             $aktifSampai = '22:00:00';
         }
 
