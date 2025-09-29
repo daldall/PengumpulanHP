@@ -90,44 +90,55 @@ class AuthController extends Controller
     }
 
     // REGISTER GURU POST
-    public function registerGuruPost(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email'=> 'required|email|unique:users,email',
-            'password'=>'required|string|min:8|confirmed',
-        ]);
+public function registerGuruPost(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email'=> 'required|email|unique:users,email',
+        'password'=>'required|string|min:8|confirmed',
+    ]);
 
-        User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'role'=>'guru',
-        ]);
+    $user = User::create([
+        'name'=>$request->name,
+        'email'=>$request->email,
+        'password'=>Hash::make($request->password),
+        'role'=>'guru',
+    ]);
 
-        return redirect()->route('auth.login.guru')->with('success','Akun guru berhasil dibuat');
-    }
+    // Langsung login setelah register
+    Auth::login($user);
+
+    // Redirect ke dashboard guru
+    return redirect()->route('guru.dashboard')
+                     ->with('success','Selamat datang, '.$user->name.'!');
+}
+
 
     // REGISTER SISWA POST
-    public function registerSiswaPost(Request $request)
-    {
-        $request->validate([
-            'name'=>'required|string|max:255',
-            'nis'=>'required|string|max:20|unique:users,nis',
-            'kelas'=>'required|string|max:20',
-            'password'=>'required|string|min:8|confirmed',
-        ]);
+public function registerSiswaPost(Request $request)
+{
+    $request->validate([
+        'name'=>'required|string|max:255',
+        'nis'=>'required|string|max:20|unique:users,nis',
+        'kelas'=>'required|string|max:20',
+        'password'=>'required|string|min:8|confirmed',
+    ]);
 
-        User::create([
-            'name'=>$request->name,
-            'nis'=>$request->nis,
-            'kelas'=>$request->kelas,
-            'password'=>Hash::make($request->password),
-            'role'=>'siswa',
-        ]);
+    $user = User::create([
+        'name'=>$request->name,
+        'nis'=>$request->nis,
+        'kelas'=>$request->kelas,
+        'password'=>Hash::make($request->password),
+        'role'=>'siswa',
+    ]);
 
-        return redirect()->route('auth.login.siswa')->with('success','Akun siswa berhasil dibuat');
-    }
+    // Langsung login setelah register
+    Auth::login($user);
+
+    // Redirect ke dashboard siswa
+    return redirect()->route('siswa.dashboard')
+                     ->with('success','Selamat datang, '.$user->name.'!');
+}
     // LOGOUT
     public function logout(Request $request)
     {
