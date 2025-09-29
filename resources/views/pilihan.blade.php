@@ -8,16 +8,6 @@
         font-family: 'Poppins', sans-serif;
         background: linear-gradient(135deg, #0d6efd, #6610f2);
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Container Card */
-    .main-content {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
     .card-option {
@@ -43,7 +33,6 @@
         margin-top: 15px;
         width: 80%;
     }
-
     @media(max-width: 768px){
         .card-option {
             margin-bottom: 20px;
@@ -51,9 +40,8 @@
     }
 </style>
 
-
 {{-- Content --}}
-<div class="main-content">
+<div class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="container text-center">
         <div class="row justify-content-center g-4">
 
