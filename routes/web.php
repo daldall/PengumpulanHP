@@ -47,6 +47,8 @@ Route::middleware(['guru'])->prefix('guru')->name('guru.')->group(function () {
     Route::post('/input-manual', [GuruController::class, 'inputManual'])->name('input-manual');
     Route::get('/export-pdf', [GuruController::class, 'exportPDF'])->name('export-pdf');
     Route::get('/export-excel', [GuruController::class, 'exportExcel'])->name('export-excel');
+    Route::post('/toggle-code/{id}', [GuruController::class, 'toggleCode'])->name('toggle-code');
+    Route::post('/close-and-generate', [GuruController::class, 'closeAndGenerate'])->name('close-and-generate');
 });
 
 // Siswa Routes (middleware siswa)

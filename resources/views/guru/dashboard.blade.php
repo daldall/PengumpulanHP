@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @include('include.navbar')
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -42,47 +43,78 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header" style="font-weight: bold; text-align: center;">Kode Kumpul HP</div>
-                                <div class="card-body text-center">
-                                    @if($kodeKumpul)
-                                        <p class="text-success">Kode Kumpul sudah dibuat</p>
-                                        <p><strong>Aktif:</strong> {{ $kodeKumpul->aktif_dari }} - {{ $kodeKumpul->aktif_sampai }}</p>
-                                        <a href="{{ route('guru.show-code', $kodeKumpul->id) }}" class="btn btn-info">Lihat Kode</a>
-                                    @else
-                                        <p class="text-danger">Kode Kumpul belum dibuat</p>
-                                        <form method="POST" action="{{ route('guru.generate-code') }}">
-                                            @csrf
-                                            <input type="hidden" name="jenis" value="kumpul">
-                                            <button type="submit" class="btn btn-primary">Generate Kode Kumpul</button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header" style="font-weight: bold; text-align: center;">Kode Pengembalian HP</div>
-                                <div class="card-body text-center">
-                                    @if($kodePengembalian)
-                                        <p class="text-success">Kode Pengembalian sudah dibuat</p>
-                                        <p><strong>Aktif:</strong> {{ $kodePengembalian->aktif_dari }} - {{ $kodePengembalian->aktif_sampai }}</p>
-                                        <a href="{{ route('guru.show-code', $kodePengembalian->id) }}" class="btn btn-info">Lihat Kode</a>
-                                    @else
-                                        <p class="text-danger">Kode Pengembalian belum dibuat</p>
-                                        <form method="POST" action="{{ route('guru.generate-code') }}">
-                                            @csrf
-                                            <input type="hidden" name="jenis" value="pengembalian">
-                                            <button type="submit" class="btn btn-success">Generate Kode Pengembalian</button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              {{-- Kode Kumpul --}}
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header fw-bold text-center">Kode Pengumpulan HP</div>
+        <div class="card-body text-center">
+            @if($kodeKumpul)
+                @if($kodeKumpul->status === 'aktif')
+                    <p class="text-success">Kode pengumpulan sedang aktif</p>
+                    <a href="{{ route('guru.show-code', $kodeKumpul->id) }}" class="btn btn-info">Lihat Kode</a>
 
+                    {{-- Tutup Kode --}}
+                    <form method="POST" action="{{ route('guru.toggle-code', $kodeKumpul->id) }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Tutup Kode</button>
+                    </form>
+                @else
+                    <p class="text-warning">Kode pengumpulan sudah ditutup</p>
+                    <form method="POST" action="{{ route('guru.generate-code') }}">
+                        @csrf
+                        <input type="hidden" name="jenis" value="kumpul">
+                        <button type="submit" class="btn btn-primary">Generate Kode Baru</button>
+                    </form>
+                @endif
+            @else
+                <p class="text-danger">Kode Kumpul belum dibuat</p>
+                <form method="POST" action="{{ route('guru.generate-code') }}">
+                    @csrf
+                    <input type="hidden" name="jenis" value="kumpul">
+                    <button type="submit" class="btn btn-primary">Generate Kode Kumpul</button>
+                </form>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- Kode Pengembalian --}}
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header fw-bold text-center">Kode Pengembalian HP</div>
+        <div class="card-body text-center">
+            @if($kodePengembalian)
+                @if($kodePengembalian->status === 'aktif')
+                    <p class="text-success">Kode pengembalian sedang aktif</p>
+                    <a href="{{ route('guru.show-code', $kodePengembalian->id) }}" class="btn btn-info">Lihat Kode</a>
+
+                    {{-- Tutup Kode --}}
+                    <form method="POST" action="{{ route('guru.toggle-code', $kodePengembalian->id) }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Tutup Kode</button>
+                    </form>
+                @else
+                    <p class="text-warning">Kode pengembalian sudah ditutup</p>
+                    <form method="POST" action="{{ route('guru.generate-code') }}">
+                        @csrf
+                        <input type="hidden" name="jenis" value="pengembalian">
+                        <button type="submit" class="btn btn-success">Generate Kode Baru</button>
+                    </form>
+                @endif
+            @else
+                <p class="text-danger">Kode Pengembalian belum dibuat</p>
+                <form method="POST" action="{{ route('guru.generate-code') }}">
+                    @csrf
+                    <input type="hidden" name="jenis" value="pengembalian">
+                    <button type="submit" class="btn btn-success">Generate Kode Pengembalian</button>
+                </form>
+            @endif
+        </div>
+    </div>
+</div>
+
+
+                    {{-- Export --}}
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <div class="card">
@@ -99,6 +131,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

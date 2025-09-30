@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswaExport;
-
+use Illuminate\Support\Str;
 
 class GuruController extends Controller
 {
@@ -24,25 +24,29 @@ class GuruController extends Controller
         $today = Carbon::today('Asia/Jakarta');
 
         $kodeKumpul = Code::where('tanggal', $today)
-                         ->where('jenis', 'kumpul')
-                         ->first();
+            ->where('jenis', 'kumpul')
+            ->first();
 
         $kodePengembalian = Code::where('tanggal', $today)
-                               ->where('jenis', 'pengembalian')
-                               ->first();
+            ->where('jenis', 'pengembalian')
+            ->first();
 
         $totalSiswa = User::where('role', 'siswa')->count();
         $sudahKumpul = Pengumpulan::whereDate('waktu_input', $today->toDateString())
-                                 ->where('status', 'dikumpulkan')
-                                 ->distinct('user_id')
-                                 ->count();
+            ->where('status', 'dikumpulkan')
+            ->distinct('user_id')
+            ->count();
         $sudahAmbil = Pengumpulan::whereDate('waktu_input', $today->toDateString())
-                                ->where('status', 'diambil')
-                                ->distinct('user_id')
-                                ->count();
+            ->where('status', 'diambil')
+            ->distinct('user_id')
+            ->count();
 
         return view('guru.dashboard', compact(
-            'kodeKumpul', 'kodePengembalian', 'totalSiswa', 'sudahKumpul', 'sudahAmbil'
+            'kodeKumpul',
+            'kodePengembalian',
+            'totalSiswa',
+            'sudahKumpul',
+            'sudahAmbil'
         ));
     }
 
@@ -53,37 +57,44 @@ class GuruController extends Controller
 
         // Hapus kode lama untuk hari ini
         Code::where('tanggal', $tanggal)
-              ->where('jenis', $jenis)
-              ->delete();
+            ->where('jenis', $jenis)
+            ->delete();
 
-        // Atur jam aktif
-        if ($jenis === 'kumpul') {
-            $aktifDari = '06:00:00';
-            $aktifSampai = '22:00:00';
-        } else {
-            $dayOfWeek = $tanggal->dayOfWeek;
-            $aktifDari = in_array($dayOfWeek, [1, 2, 3]) ? '06:00:00' : '06:00:00';
-            $aktifSampai = '22:00:00';
-        }
-
+        // Generate kode random
         $kode = Code::generateKode($tanggal, $jenis);
 
+        // Simpan kode baru (langsung aktif)
         Code::create([
             'kode' => $kode,
             'tanggal' => $tanggal,
             'jenis' => $jenis,
-            'aktif_dari' => $aktifDari,
-            'aktif_sampai' => $aktifSampai,
+            'status' => 'aktif',
         ]);
 
-        return redirect()->back()->with('success', 'Kode ' . $jenis . ' berhasil dibuat');
+        return redirect()->back()->with('success', 'Kode ' . $jenis . ' berhasil dibuat dan aktif');
+    }
+
+    public function toggleCode($id)
+    {
+        $code = Code::findOrFail($id);
+
+        if ($code->status === 'aktif') {
+            // Tutup kode
+            $code->status = 'nonaktif';
+        } else {
+            // Aktifkan kembali kode
+            $code->status = 'aktif';
+        }
+
+        $code->save();
+
+        return redirect()->back()->with('success', 'Kode ' . $code->jenis . ' sekarang: ' . $code->status);
     }
 
     public function showCode($id)
     {
         $code = Code::findOrFail($id);
 
-        // Hanya tampilkan kode (tanpa QR image)
         return view('guru.code-show', [
             'code' => $code,
         ]);
@@ -97,14 +108,13 @@ class GuruController extends Controller
         $query = User::where('role', 'siswa');
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-          ->orWhere('nis', 'like', '%' . $search . '%')
-          ->orWhere('kelas', 'like', '%' . $search . '%');
+                    ->orWhere('nis', 'like', '%' . $search . '%')
+                    ->orWhere('kelas', 'like', '%' . $search . '%');
             });
         }
 
-        // paginate 10 data per halaman
         $siswa = $query->paginate(8);
 
         $statusSiswa = [];
@@ -137,9 +147,6 @@ class GuruController extends Controller
         return view('guru.monitoring', compact('statusSiswa', 'siswa', 'search'));
     }
 
-
-
-
     public function inputManual(Request $request)
     {
         $request->validate([
@@ -150,9 +157,9 @@ class GuruController extends Controller
         $today = Carbon::today('Asia/Jakarta');
 
         $exists = Pengumpulan::where('user_id', $request->user_id)
-                            ->whereDate('waktu_input', $today->toDateString())
-                            ->where('status', $request->status)
-                            ->exists();
+            ->whereDate('waktu_input', $today->toDateString())
+            ->where('status', $request->status)
+            ->exists();
 
         if ($exists) {
             return redirect()->back()->with('error', 'Status ini sudah ada untuk siswa hari ini');
@@ -182,10 +189,10 @@ class GuruController extends Controller
         $date = Carbon::parse($tanggal)->setTimezone('Asia/Jakarta');
 
         $data = User::where('role', 'siswa')
-                   ->with(['pengumpulan' => function($query) use ($date) {
-                       $query->whereDate('waktu_input', $date->toDateString());
-                   }])
-                   ->get();
+            ->with(['pengumpulan' => function ($query) use ($date) {
+                $query->whereDate('waktu_input', $date->toDateString());
+            }])
+            ->get();
 
         $laporan = [];
         foreach ($data as $siswa) {
@@ -202,7 +209,7 @@ class GuruController extends Controller
             $laporan[] = [
                 'nis' => $siswa->nis,
                 'nama' => $siswa->name,
-                'kelas'=> $siswa->name,
+                'kelas' => $siswa->kelas,
                 'jam_kumpul' => $kumpul ? $kumpul->waktu_input->format('H:i:s') : '-',
                 'jam_ambil' => $ambil ? $ambil->waktu_input->format('H:i:s') : '-',
                 'metode_kumpul' => $kumpul ? ucfirst($kumpul->metode) : '-',

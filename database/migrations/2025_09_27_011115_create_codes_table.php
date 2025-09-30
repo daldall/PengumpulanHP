@@ -13,14 +13,13 @@ return new class extends Migration
             $table->string('kode')->unique();
             $table->date('tanggal');
             $table->enum('jenis', ['kumpul', 'pengembalian']);
-            $table->time('aktif_dari');
-            $table->time('aktif_sampai');
+            $table->enum('status', ['aktif', 'nonaktif'])->default('nonaktif');
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('qrcodes');
+        Schema::dropIfExists('codes');
     }
 };

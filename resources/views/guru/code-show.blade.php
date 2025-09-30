@@ -1,31 +1,51 @@
 @extends('layouts.app')
 @include('include.navbar')
+
 @section('content')
-<div class="container py-4">
-    <div class="text-center mb-4">
-        <h2 class="fw-bold">Kode {{ ucfirst($code->jenis) }}</h2>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Kode {{ ucfirst($code->jenis) }}</h2>
         <small class="text-muted">{{ $code->tanggal->format('d M Y') }}</small>
     </div>
 
-    <div class="card shadow-lg rounded-4 p-4 d-flex flex-column align-items-center justify-content-center">
+    {{-- Card utama --}}
+    <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
+
         {{-- QR Code --}}
         <div class="mb-3">
-            {!! QrCode::size(220)->generate(url('/http://127.0.0.1:8000/login/siswa/'.$code->kode)) !!}
+            {!! QrCode::size(220)->generate(url('/login/siswa/'.$code->kode)) !!}
         </div>
 
         {{-- Kode teks --}}
-        <p class="mb-0" style="font-size:2em; font-weight:bold; letter-spacing:2px;">
+        <p class="display-5 fw-bold text-dark tracking-wide">
             {{ $code->kode }}
         </p>
     </div>
 
-    <div class="card mt-4 shadow-sm rounded-4 p-3">
-        <p class="mb-2"><strong>Aktif dari:</strong> <span class="text-success">{{ $code->aktif_dari }}</span></p>
-        <p class="mb-2"><strong>Aktif sampai:</strong> <span class="text-danger">{{ $code->aktif_sampai }}</span></p>
+    {{-- Info waktu aktif --}}
+    <div class="card mt-4 shadow-sm border-0 rounded-4 p-4">
+        <h5 class="fw-bold mb-3 text-primary">Informasi Aktivasi</h5>
+        <p><strong>Status:</strong>
+            <span class="badge {{ $code->status === 'aktif' ? 'bg-success' : 'bg-secondary' }} px-3 py-2 fs-6">
+                {{ ucfirst($code->status) }}
+            </span>
+        </p>
     </div>
 
-    <div class="text-center mt-3">
-        <a href="{{ route('guru.dashboard') }}" class="btn btn-secondary fw-bold">
+    {{-- Tombol --}}
+    <div class="text-center mt-4 d-flex justify-content-center gap-3">
+        {{-- Tombol toggle kode --}}
+        <form method="POST" action="{{ route('guru.toggle-code', $code->id) }}">
+            @csrf
+            <button type="submit"
+                class="btn {{ $code->status === 'aktif' ? 'btn-outline-danger' : 'btn-outline-success' }} btn-lg px-4 fw-bold">
+                <i class="fa {{ $code->status === 'aktif' ? 'fa-ban' : 'fa-check-circle' }}"></i>
+                {{ $code->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }} Kode
+            </button>
+        </form>
+
+        {{-- Tombol kembali --}}
+        <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-secondary btn-lg px-4 fw-bold">
             <i class="fa fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -33,9 +53,8 @@
 
 {{-- Inline CSS --}}
 <style>
-    .card p {
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
+    .tracking-wide {
+        letter-spacing: 4px;
     }
 </style>
 @endsection

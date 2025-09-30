@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Code extends Model
 {
@@ -16,14 +15,11 @@ class Code extends Model
         'kode',
         'tanggal',
         'jenis',
-        'aktif_dari',
-        'aktif_sampai',
+        'status',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
-        'aktif_dari' => 'datetime:H:i:s',
-        'aktif_sampai' => 'datetime:H:i:s',
     ];
 
     public function pengumpulan()
@@ -31,20 +27,20 @@ class Code extends Model
         return $this->hasMany(\App\Models\Pengumpulan::class, 'kode', 'kode');
     }
 
+    // cek apakah kode aktif
     public function isActive()
     {
-        $now = Carbon::now();
-        $currentTime = $now->format('H:i:s');
-        $currentDate = $now->toDateString();
+        return $this->status === 'aktif';
+    }
 
-        return $this->tanggal->toDateString() === $currentDate
-            && $currentTime >= $this->aktif_dari->format('H:i:s')
-            && $currentTime <= $this->aktif_sampai->format('H:i:s');
+    // scope untuk query kode yang aktif
+    public function scopeAktif($query)
+    {
+        return $query->where('status', 'aktif');
     }
 
     public static function generateKode($tanggal, $jenis)
     {
         return strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 6));
-
     }
 }
