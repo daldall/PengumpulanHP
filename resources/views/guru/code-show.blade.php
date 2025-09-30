@@ -10,7 +10,6 @@
 
     {{-- Card utama --}}
     <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
-
         {{-- QR Code --}}
         <div class="mb-3">
             {!! QrCode::size(220)->generate(url('/login/siswa/'.$code->kode)) !!}
@@ -24,29 +23,34 @@
 
     {{-- Info waktu aktif --}}
     <div class="card mt-4 shadow-sm border-0 rounded-4 p-4">
-        <h5 class="fw-bold mb-3 text-primary">Informasi Aktivasi</h5>
-        <p><strong>Status:</strong>
-            <span class="badge {{ $code->status === 'aktif' ? 'bg-success' : 'bg-secondary' }} px-3 py-2 fs-6">
-                {{ ucfirst($code->status) }}
-            </span>
-        </p>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold mb-3 text-primary">Informasi Aktivasi</h5>
+                <p class="mb-0">
+                    <strong>Status:</strong>
+                    <span class="badge {{ $code->status === 'aktif' ? 'bg-success' : 'bg-secondary' }} px-3 py-2 fs-6">
+                        {{ ucfirst($code->status) }}
+                    </span>
+                </p>
+            </div>
+
+            {{-- Tombol toggle kode --}}
+            <form method="POST" action="{{ route('guru.toggle-code', $code->id) }}">
+                @csrf
+                <button type="submit"
+                    class="btn {{ $code->status === 'aktif' ? 'btn-danger' : 'btn-success' }} px-4 fw-bold rounded-pill">
+                    <i class="fa {{ $code->status === 'aktif' ? 'fa-ban' : 'fa-check-circle' }}"></i>
+                    {{ $code->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
+                </button>
+            </form>
+        </div>
     </div>
 
-    {{-- Tombol --}}
-    <div class="text-center mt-4 d-flex justify-content-center gap-3">
-        {{-- Tombol toggle kode --}}
-        <form method="POST" action="{{ route('guru.toggle-code', $code->id) }}">
-            @csrf
-            <button type="submit"
-                class="btn {{ $code->status === 'aktif' ? 'btn-outline-danger' : 'btn-outline-success' }} btn-lg px-4 fw-bold">
-                <i class="fa {{ $code->status === 'aktif' ? 'fa-ban' : 'fa-check-circle' }}"></i>
-                {{ $code->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }} Kode
-            </button>
-        </form>
-
-        {{-- Tombol kembali --}}
-        <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-secondary btn-lg px-4 fw-bold">
-            <i class="fa fa-arrow-left"></i> Kembali
+    {{-- Tombol kembali --}}
+    <div class="text-center mt-4">
+        <a href="{{ route('guru.dashboard') }}"
+           class="btn btn-outline-secondary px-5 py-2 fw-bold rounded-pill shadow-sm">
+            <i class="fa fa-arrow-left me-2"></i> Kembali ke Dashboard
         </a>
     </div>
 </div>

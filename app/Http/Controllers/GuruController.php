@@ -23,6 +23,10 @@ class GuruController extends Controller
     {
         $today = Carbon::today('Asia/Jakarta');
 
+        Code::where('tanggal', '<', $today)
+            ->where('status', 'aktif')
+            ->update(['status' => 'nonaktif']);
+
         $kodeKumpul = Code::where('tanggal', $today)
             ->where('jenis', 'kumpul')
             ->first();
@@ -49,6 +53,7 @@ class GuruController extends Controller
             'sudahAmbil'
         ));
     }
+
 
     public function generateCode(Request $request)
     {
