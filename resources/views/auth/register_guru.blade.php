@@ -7,18 +7,18 @@
     <div class="half-circle"></div>
 
     <div class="row justify-content-center w-100 position-relative mx-0">
-        <div class="col-xl-3 col-lg-4 col-md-5 col-sm-7 col-10">
-            <div class="register-card shadow-lg border-0 rounded-4 p-3 p-md-4">
+        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-11">
+            <div class="register-card shadow-lg border-0 rounded-4 p-4 p-md-5">
 
                 {{-- Header --}}
-                <div class="text-center mb-3 mb-md-4">
+                <div class="text-center mb-4 mb-md-5">
                     <img src="{{ asset('images/yasfat.png') }}" 
                          alt="Logo Sekolah" 
-                         class="mb-2 mb-md-3" 
-                         width="60" 
+                         class="mb-3 mb-md-4" 
+                         width="70" 
                          style="object-fit:contain;">
-                    <h4 class="fw-bold mb-0 text-white fs-5 fs-md-4">Daftar Akun Guru</h4>
-                    <small class="text-light">Isi data di bawah untuk registrasi</small>
+                    <h4 class="fw-bold mb-0 text-white fs-4 fs-md-3">Daftar Akun Guru</h4>
+                    <small class="text-light fs-6">Isi data di bawah untuk registrasi</small>
                 </div>
 
                 {{-- Body --}}
@@ -26,60 +26,61 @@
                     @csrf
 
                     {{-- Nama --}}
-                    <div class="mb-3">
-                        <label for="name" class="form-label fw-bold text-white small">Nama Lengkap</label>
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold text-white">Nama Lengkap</label>
                         <input id="name" type="text"
-                               class="form-control form-control-sm @error('name') is-invalid @enderror"
+                               class="form-control @error('name') is-invalid @enderror"
                                name="name" value="{{ old('name') }}"
                                required autofocus>
                         @error('name')
-                            <div class="invalid-feedback small">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Email --}}
-                    <div class="mb-3">
-                        <label for="email" class="form-label fw-bold text-white small">Email</label>
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold text-white">Email</label>
                         <input id="email" type="email"
-                               class="form-control form-control-sm @error('email') is-invalid @enderror"
+                               class="form-control @error('email') is-invalid @enderror"
                                name="email" value="{{ old('email') }}"
                                required>
                         @error('email')
-                            <div class="invalid-feedback small">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Password --}}
-                    <div class="mb-3">
-                        <label for="password" class="form-label fw-bold text-white small">Password</label>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold text-white">Password</label>
                         <input id="password" type="password"
-                               class="form-control form-control-sm @error('password') is-invalid @enderror"
+                               class="form-control @error('password') is-invalid @enderror"
                                name="password" required>
                         @error('password')
-                            <div class="invalid-feedback small">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Konfirmasi Password --}}
-                    <div class="mb-3">
-                        <label for="password-confirm" class="form-label fw-bold text-white small">Konfirmasi Password</label>
+                    <div class="mb-4">
+                        <label for="password-confirm" class="form-label fw-bold text-white">Konfirmasi Password</label>
                         <input id="password-confirm" type="password"
-                               class="form-control form-control-sm"
+                               class="form-control"
                                name="password_confirmation" required>
                     </div>
 
                     {{-- Tombol Register --}}
-                    <button type="submit" class="btn w-100 fw-bold register-btn">
+                    <button type="submit" class="btn w-100 fw-bold register-btn py-3">
                         <i class="bi bi-person-plus"></i> Register
                     </button>
                 </form>
 
                 {{-- Footer --}}
-                <div class="text-center mt-3" style="font-size:0.75rem; color:white;">
-                    Sudah punya akun?
-                    <a href="{{ route('auth.login.guru') }}" class="fw-bold register-link">Login</a>
-                    <br>
-                    <span class="d-block mt-1">© {{ date('Y') }} <strong>SMK FATAHILLAH</strong></span>
+                <div class="text-center mt-4">
+                    <p class="mb-1 text-white">
+                        Sudah punya akun?
+                        <a href="{{ route('auth.login.guru') }}" class="fw-bold register-link">Login</a>
+                    </p>
+                    <span class="text-light">© {{ date('Y') }} <strong>SMK FATAHILLAH</strong></span>
                 </div>
             </div>
         </div>
@@ -88,16 +89,23 @@
 @endsection
 
 <style>
-html, body {
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
     height: 100%;
-    overflow-x: hidden; /* hanya hide horizontal scroll */
+    width: 100%;
+    overflow-x: hidden;
+    background: linear-gradient(to bottom, #0d47a1, #6200ea);
 }
 
 /* Background Gradient */
 .register-wrapper {
     min-height: 100vh;
+    height: auto;
     width: 100vw;       
     margin: 0;         
     padding: 15px;        
@@ -123,9 +131,31 @@ html, body {
 .register-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(5px);
-    border-radius: 10px;
+    border-radius: 15px;
     z-index: 1;
     max-width: 100%;
+    min-height: auto;
+}
+
+/* Form Control */
+.form-control {
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #0d6efd;
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 /* Tombol Register */
@@ -133,13 +163,15 @@ button.register-btn {
     background: #0d6efd;
     border: 1px solid #00a2ff;
     color: #fff;
-    border-radius: 6px;
-    padding: 10px;
+    border-radius: 8px;
+    padding: 12px;
     transition: 0.3s;
+    font-size: 16px;
 }
 
 button.register-btn:hover {
     background: #0b5ed7;
+    transform: translateY(-1px);
 }
 
 /* Link Login */
@@ -152,6 +184,16 @@ button.register-btn:hover {
     text-decoration: underline;
 }
 
+/* Remove default bootstrap margins */
+.row {
+    margin: 0 !important;
+}
+
+.container-fluid, .container {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 /* Responsive breakpoints */
 @media (max-width: 576px) {
     .half-circle {
@@ -160,18 +202,29 @@ button.register-btn:hover {
     
     .register-wrapper {
         padding: 10px;
+        min-height: 100vh;
     }
     
     .register-card {
-        padding: 1rem !important;
+        padding: 1.5rem !important;
     }
     
     .register-card img {
-        width: 50px !important;
+        width: 60px !important;
     }
     
     .register-card h4 {
-        font-size: 1.1rem !important;
+        font-size: 1.3rem !important;
+    }
+    
+    .form-control {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .register-btn {
+        padding: 10px !important;
+        font-size: 14px !important;
     }
 }
 
@@ -181,23 +234,24 @@ button.register-btn:hover {
         width: 500px;
         height: 500px;
     }
+    
+    .register-wrapper {
+        min-height: 100vh;
+    }
 }
 
 @media (min-width: 992px) {
     .register-wrapper {
         padding: 20px;
+        min-height: 100vh;
     }
 }
 
-/* Form control responsive */
-@media (max-width: 576px) {
-    .form-control-sm {
-        font-size: 0.875rem;
-        padding: 0.375rem 0.75rem;
-    }
-    
-    .form-label {
-        font-size: 0.8rem;
+/* Ensure full screen on all devices */
+@media (max-height: 600px) {
+    .register-wrapper {
+        min-height: 100vh;
+        height: auto;
     }
 }
 </style>
