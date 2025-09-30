@@ -7,6 +7,7 @@
             <div class="card">
                 <div class="card-header text-center">
                     <h4 class="fw-bold">Dashboard Guru</h4>
+                </div>
 
                 <div class="card-body">
                     @if (session('success'))
@@ -86,17 +87,14 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <a href="{{ route('guru.export-pdf') }}" class="btn btn-outline-success btn-block mb-2">
-                                                <i class="fas fa-download"></i> Export PDF
-                                            </a>
-                                </div>
-                                        <div class="col-md-3">
+                                    <div class="d-flex justify-content-start gap-2">
+                                        <a href="{{ route('guru.export-pdf') }}" class="btn btn-danger">
+                                            <i class="fas fa-download"></i> Export PDF
+                                        </a>
                                         <a href="{{ route('guru.export-excel') }}" class="btn btn-success">
-    Export Excel
-</a>
-
+                                            <i class="fas fa-download"></i> Export Excel
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
