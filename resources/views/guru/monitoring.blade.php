@@ -114,7 +114,7 @@
                                                     <input type="hidden" name="status" value="dikumpulkan">
                                                     <button type="submit" class="btn btn-outline-primary btn-sm"
                                                             onclick="return confirm('Tandai sebagai dikumpulkan?')">
-                                                        <i class="fas fa-upload"></i> Kumpulin
+                                                        <i class=""></i> Kumpulin
                                                     </button>
                                                 </form>
                                             @endif
@@ -126,7 +126,7 @@
                                                     <input type="hidden" name="status" value="diambil">
                                                     <button type="submit" class="btn btn-outline-success btn-sm"
                                                             onclick="return confirm('Tandai sebagai diambil?')">
-                                                        <i class="fas fa-download"></i> Ambil
+                                                        <i class=""></i> Ambil
                                                     </button>
                                                 </form>
                                             @endif
