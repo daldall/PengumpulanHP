@@ -5,6 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
+                <div class="card-header text-center">
+                    <h4 class="fw-bold">Dashboard Guru</h4>
 
                 <div class="card-body">
                     @if (session('success'))
@@ -41,7 +43,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header">Kode Kumpul HP</div>
+                                <div class="card-header" style="font-weight: bold; text-align: center;">Kode Kumpul HP</div>
                                 <div class="card-body text-center">
                                     @if($kodeKumpul)
                                         <p class="text-success">Kode Kumpul sudah dibuat</p>
@@ -58,10 +60,10 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header">Kode Pengembalian HP</div>
+                                <div class="card-header" style="font-weight: bold; text-align: center;">Kode Pengembalian HP</div>
                                 <div class="card-body text-center">
                                     @if($kodePengembalian)
                                         <p class="text-success">Kode Pengembalian sudah dibuat</p>

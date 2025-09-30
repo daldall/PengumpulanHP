@@ -4,6 +4,8 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
+             <div class="card-header text-center">
+            <h2 class="mb-4 text-center fw-bold">Dashboard Siswa</h2>
 
             {{-- Alerts --}}
             @if(session('success'))
@@ -60,7 +62,7 @@
 
             {{-- Input Kode --}}
             <div class="card shadow-sm mb-4">
-                <div class="card-header"><i class="fas fa-keyboard me-2"></i> Input Kode HP</div>
+                <div class="card-header bg-success text-white"><i class="fas fa-keyboard me-2"></i> Input Kode HP</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('siswa.inputqr') }}">
                         @csrf

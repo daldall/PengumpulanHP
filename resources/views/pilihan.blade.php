@@ -10,6 +10,16 @@
         min-height: 100vh;
     }
 
+    .logo-container {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .logo-container img {
+        width: 120px;
+        height: 120px;
+    }
+
     .card-option {
         background: rgba(255, 255, 255, 0.12);
         backdrop-filter: blur(12px);
@@ -43,6 +53,11 @@
 {{-- Content --}}
 <div class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="container text-center">
+        {{-- Logo --}}
+        <div class="logo-container">
+            <img src="{{ asset('images/yasfat.png') }}" alt="Yasfat Logo">
+        </div>
+
         <div class="row justify-content-center g-4">
 
             {{-- Pilih Siswa --}}
