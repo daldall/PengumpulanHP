@@ -19,6 +19,56 @@ class GuruController extends Controller
         $this->middleware(['auth', 'guru']);
     }
 
+    public function index()
+    {
+        $gurus = User::where('role', 'guru')->get();
+        return view('admin.dashboard', compact('gurus'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'guru',
+        ]);
+
+        return redirect()->back()->with('success', 'Guru berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $guru = User::findOrFail($id);
+        return view('admin.guru-edit', compact('guru'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $guru = User::findOrFail($id);
+
+        $guru->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password ? bcrypt($request->password) : $guru->password,
+        ]);
+
+        return redirect()->back()->with('success', 'Guru berhasil diperbarui!');
+    }
+
+    public function delete($id)
+    {
+        $guru = User::findOrFail($id);
+        $guru->delete();
+        return redirect()->back()->with('success', 'Guru berhasil dihapus!');
+    }
+
     public function dashboard()
     {
         $today = Carbon::today('Asia/Jakarta');
