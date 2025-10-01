@@ -18,7 +18,7 @@
                 </div>
 
                 {{-- Body --}}
-                <form method="POST" action="{{ route('auth.login.guru.post') }}">
+                <form method="POST" action="{{ route('auth.login.admin.post') }}">
                     @csrf
                     {{-- Email --}}
                     <div class="mb-3">

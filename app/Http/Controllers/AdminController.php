@@ -8,39 +8,40 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    // Dashboard Admin
+    public function __construct()
+    {
+        $this->middleware(['auth', 'admin']);
+    }
+
     public function dashboard()
     {
         $totalGuru = User::where('role', 'guru')->count();
         $totalSiswa = User::where('role', 'siswa')->count();
+        
+        // Ambil semua guru dan siswa untuk ditampilkan di dashboard
+        $guru = User::where('role', 'guru')->get();
+        $siswa = User::where('role', 'siswa')->get();
+        
+        $latestUsers = User::whereIn('role', ['guru', 'siswa'])
+                          ->orderBy('created_at', 'desc')
+                          ->limit(5)
+                          ->get();
 
-        return view('admin.dashboard', compact('totalGuru', 'totalSiswa'));
+        return view('admin.dashboard', compact('totalGuru', 'totalSiswa', 'latestUsers', 'guru', 'siswa'));
     }
 
-    // -----------------------------
-    // CRUD GURU
-    // -----------------------------
-
-    // List Guru
-    public function listGuru()
-    {
-        $gurus = User::where('role', 'guru')->get();
-        return view('admin.guru.list', compact('gurus'));
-    }
-
-    // Form create guru
+    // CRUD Guru
     public function createGuru()
     {
-        return view('admin.guru.create');
+        return view('admin.create_guru');
     }
 
-    // Store guru baru
     public function storeGuru(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         User::create([
@@ -50,120 +51,117 @@ class AdminController extends Controller
             'role' => 'guru',
         ]);
 
-        return redirect()->route('admin.guru.list')->with('success', 'Guru berhasil ditambahkan!');
+        return redirect()->route('admin.dashboard')->with('success', 'Guru berhasil ditambahkan!');
     }
 
-    // Edit guru
     public function editGuru($id)
     {
         $guru = User::findOrFail($id);
-        return view('admin.guru.edit', compact('guru'));
+        return view('admin.edit_guru', compact('guru'));
     }
 
-    // Update guru
     public function updateGuru(Request $request, $id)
     {
         $guru = User::findOrFail($id);
-
+        
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $guru->id,
-            'password' => 'nullable|string|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         $guru->name = $request->name;
         $guru->email = $request->email;
-
+        
         if ($request->password) {
             $guru->password = Hash::make($request->password);
         }
-
+        
         $guru->save();
 
-        return redirect()->route('admin.guru.list')->with('success', 'Data guru berhasil diperbarui!');
+        return redirect()->route('admin.dashboard')->with('success', 'Guru berhasil diupdate!');
     }
 
-    // Delete guru
     public function deleteGuru($id)
     {
         $guru = User::findOrFail($id);
         $guru->delete();
 
-        return redirect()->route('admin.guru.list')->with('success', 'Guru berhasil dihapus!');
+        return redirect()->route('admin.dashboard')->with('success', 'Guru berhasil dihapus!');
     }
 
-    // -----------------------------
-    // CRUD SISWA
-    // -----------------------------
-
-    // List Siswa
-    public function listSiswa()
-    {
-        $siswa = User::where('role', 'siswa')->get();
-        return view('admin.siswa.list', compact('siswa'));
-    }
-
-    // Form create siswa
+    // CRUD Siswa
     public function createSiswa()
     {
-        return view('admin.siswa.create');
+        return view('admin.create_siswa');
     }
 
-    // Store siswa baru
     public function storeSiswa(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'nis' => 'required|string|max:255|unique:users',
+            'kelas' => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'nis' => $request->nis,
+            'kelas' => $request->kelas,
             'password' => Hash::make($request->password),
             'role' => 'siswa',
         ]);
 
-        return redirect()->route('admin.siswa.list')->with('success', 'Siswa berhasil ditambahkan!');
+        return redirect()->route('admin.dashboard')->with('success', 'Siswa berhasil ditambahkan!');
     }
 
-    // Edit siswa
     public function editSiswa($id)
     {
         $siswa = User::findOrFail($id);
-        return view('admin.siswa.edit', compact('siswa'));
+        return view('admin.edit_siswa', compact('siswa'));
     }
 
-    // Update siswa
     public function updateSiswa(Request $request, $id)
     {
         $siswa = User::findOrFail($id);
-
+        
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $siswa->id,
-            'password' => 'nullable|string|min:6|confirmed',
+            'nis' => 'required|string|max:255|unique:users,nis,' . $id,
+            'kelas' => 'required|string|max:255',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         $siswa->name = $request->name;
-        $siswa->email = $request->email;
-
+        $siswa->nis = $request->nis;
+        $siswa->kelas = $request->kelas;
+        
         if ($request->password) {
             $siswa->password = Hash::make($request->password);
         }
-
+        
         $siswa->save();
 
-        return redirect()->route('admin.siswa.list')->with('success', 'Data siswa berhasil diperbarui!');
+        return redirect()->route('admin.dashboard')->with('success', 'Siswa berhasil diupdate!');
     }
 
-    // Delete siswa
     public function deleteSiswa($id)
     {
         $siswa = User::findOrFail($id);
         $siswa->delete();
 
-        return redirect()->route('admin.siswa.list')->with('success', 'Siswa berhasil dihapus!');
+        return redirect()->route('admin.dashboard')->with('success', 'Siswa berhasil dihapus!');
+    }
+
+    // Method untuk list (jika masih diperlukan)
+    public function listGuru()
+    {
+        return redirect()->route('admin.dashboard');
+    }
+
+    public function listSiswa()
+    {
+        return redirect()->route('admin.dashboard');
     }
 }
