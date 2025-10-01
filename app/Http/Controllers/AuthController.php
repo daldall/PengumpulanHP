@@ -90,73 +90,93 @@ class AuthController extends Controller
     }
 
     // REGISTER GURU POST
-public function registerGuruPost(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email'=> 'required|email|unique:users,email',
-        'password'=>'required|string|min:8|confirmed',
-    ]);
+    public function registerGuruPost(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email'=> 'required|email|unique:users,email',
+            'password'=>'required|string|min:8|confirmed',
+        ]);
 
-    $user = User::create([
-        'name'=>$request->name,
-        'email'=>$request->email,
-        'password'=>Hash::make($request->password),
-        'role'=>'guru',
-    ]);
+        $user = User::create([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>Hash::make($request->password),
+            'role'=>'guru',
+        ]);
 
-    // Langsung login setelah register
-    Auth::login($user);
+        Auth::login($user);
 
-    // Redirect ke dashboard guru
-    return redirect()->route('guru.dashboard')
-                     ->with('success','Selamat datang, '.$user->name.'!');
-}
-
+        return redirect()->route('guru.dashboard')
+                         ->with('success','Selamat datang, '.$user->name.'!');
+    }
 
     // REGISTER SISWA POST
-public function registerSiswaPost(Request $request)
-{
-    $request->validate([
-        'name'=>'required|string|max:255',
-        'nis'=>'required|string|max:20|unique:users,nis',
-        'kelas'=>'required|string|max:20',
-        'password'=>'required|string|min:8|confirmed',
-    ]);
+    public function registerSiswaPost(Request $request)
+    {
+        $request->validate([
+            'name'=>'required|string|max:255',
+            'nis'=>'required|string|max:20|unique:users,nis',
+            'kelas'=>'required|string|max:20',
+            'password'=>'required|string|min:8|confirmed',
+        ]);
 
-    $user = User::create([
-        'name'=>$request->name,
-        'nis'=>$request->nis,
-        'kelas'=>$request->kelas,
-        'password'=>Hash::make($request->password),
-        'role'=>'siswa',
-    ]);
+        $user = User::create([
+            'name'=>$request->name,
+            'nis'=>$request->nis,
+            'kelas'=>$request->kelas,
+            'password'=>Hash::make($request->password),
+            'role'=>'siswa',
+        ]);
 
-    // Langsung login setelah register
-    Auth::login($user);
+        Auth::login($user);
 
-    // Redirect ke dashboard siswa
-    return redirect()->route('siswa.dashboard')
-                     ->with('success','Selamat datang, '.$user->name.'!');
-}
+        return redirect()->route('siswa.dashboard')
+                         ->with('success','Selamat datang, '.$user->name.'!');
+    }
+
+    // LOGIN ADMIN GET
+    public function loginAdmin()
+    {
+        return view('auth.login_admin'); // pastikan file view ada
+    }
+
+    // LOGIN ADMIN POST
+    public function loginAdminPost(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required','email'],
+            'password' => ['required'],
+        ]);
+
+        // login hanya jika role = admin
+        if (Auth::attempt(array_merge($credentials, ['role' => 'admin']))) {
+            $request->session()->regenerate();
+            return redirect()->route('admin.dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah / bukan admin',
+        ]);
+    }
+
     // LOGOUT
     public function logout(Request $request)
     {
-        $user = Auth::user(); // ambil data sebelum logout
+        $user = Auth::user();
 
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Arahkan sesuai role terakhir
         if ($user && $user->role === 'guru') {
             return redirect()->route('auth.login.guru')->with('success', 'Anda berhasil logout.');
         } elseif ($user && $user->role === 'siswa') {
             return redirect()->route('auth.login.siswa')->with('success', 'Anda berhasil logout.');
+        } elseif ($user && $user->role === 'admin') {
+            return redirect()->route('auth.login.admin')->with('success', 'Anda berhasil logout.');
         }
 
-        // fallback kalau ga ada user/role
         return redirect()->route('pilihan');
     }
-
 }

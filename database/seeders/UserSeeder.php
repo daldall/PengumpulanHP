@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     {
         // Create Guru Account
         User::create([
-            'name' => 'Admin Guru',
+            'name' => 'Guru',
             'email' => 'guru@example.com',
             'password' => Hash::make('password'),
             'role' => 'guru',

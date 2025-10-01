@@ -54,11 +54,14 @@
     <div class="d-flex align-items-center justify-content-center min-vh-100">
         <div class="container text-center">
         {{-- Logo --}}
-<div class="logo-container">
-    <img src="{{ asset('images/yasfat.png') }}" alt="Yasfat Logo">
-    <h2 class="fw-bold text-white mt-3">Sistem Pengumpulan HP Yasfat</h2>
-    <p class="text-white-50">Silakan pilih role untuk masuk</p>
-</div>
+        <div class="logo-container">
+            <a onclick="window.location='{{ route('auth.login.admin') }}'">
+                <img src="{{ asset('images/yasfat.png') }}" alt="Yasfat Logo">
+            </a>
+            <h2 class="fw-bold text-white mt-3">Sistem Pengumpulan HP Yasfat</h2>
+            <p class="text-white-50">Silakan pilih role untuk masuk</p>
+        </div>
+
 
             <div class="row justify-content-center g-4">
 

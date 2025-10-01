@@ -5,6 +5,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AdminController;
 
 
 // Redirect root ke halaman pilihan
@@ -37,6 +38,32 @@ Auth::routes();
 
 // Home
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+// Login Admin
+Route::get('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.login.admin');
+Route::post('/login/admin', [AuthController::class, 'loginAdminPost'])->name('auth.login.admin.post');
+
+// Dashboard Admin (middleware admin)
+Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // CRUD Guru
+    Route::get('/guru', [AdminController::class, 'listGuru'])->name('guru.list');
+    Route::get('/guru/create', [AdminController::class, 'createGuru'])->name('guru.create');
+    Route::post('/guru/store', [AdminController::class, 'storeGuru'])->name('guru.store');
+    Route::get('/guru/{id}/edit', [AdminController::class, 'editGuru'])->name('guru.edit');
+    Route::put('/guru/{id}', [AdminController::class, 'updateGuru'])->name('guru.update');
+    Route::delete('/guru/{id}', [AdminController::class, 'deleteGuru'])->name('guru.delete');
+
+    // CRUD Siswa
+    Route::get('/siswa', [AdminController::class, 'listSiswa'])->name('siswa.list');
+    Route::get('/siswa/create', [AdminController::class, 'createSiswa'])->name('siswa.create');
+    Route::post('/siswa/store', [AdminController::class, 'storeSiswa'])->name('siswa.store');
+    Route::get('/siswa/{id}/edit', [AdminController::class, 'editSiswa'])->name('siswa.edit');
+    Route::put('/siswa/{id}', [AdminController::class, 'updateSiswa'])->name('siswa.update');
+    Route::delete('/siswa/{id}', [AdminController::class, 'deleteSiswa'])->name('siswa.delete');
+});
 
 // Guru Routes (middleware guru)
 Route::middleware(['guru'])->prefix('guru')->name('guru.')->group(function () {
