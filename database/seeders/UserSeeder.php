@@ -10,6 +10,13 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('admin123'), // password bisa diubah sesuai kebutuhan
+            'role' => 'admin',
+        ]);
+        
         // Create Guru Account
         User::create([
             'name' => 'Guru',
