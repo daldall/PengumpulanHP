@@ -91,36 +91,57 @@
         </div>
 
         <!-- SISWA -->
-        <div class="tab-pane fade" id="siswa">
-            <div class="d-flex justify-content-between mb-2">
-                <h4>Daftar Siswa</h4>
-                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddSiswa"><i class="fas fa-plus"></i> Tambah Siswa</button>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead class="table-success">
-                        <tr><th>NIS</th><th>Nama</th><th>Kelas</th><th>Aksi</th></tr>
-                    </thead>
-                    <tbody>
-                        @forelse($siswas as $siswa)
-                            <tr>
-                                <td>{{ $siswa->nis }}</td>
-                                <td>{{ $siswa->name }}</td>
-                                <td>{{ $siswa->kelas }}</td>
-                                <td>
-                                    <a href="{{ route('admin.siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('admin.siswa.delete', $siswa->id) }}" method="POST" style="display:inline-block">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty <tr><td colspan="4" class="text-center text-muted">Belum ada siswa</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+<div class="tab-pane fade" id="siswa">
+    <div class="d-flex justify-content-between mb-2">
+        <h4>Daftar Siswa</h4>
+        <div class="d-flex gap-2">
+            <input type="text" id="searchSiswa" class="form-control form-control-sm" placeholder="Cari siswa...">
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddSiswa">
+                <i class="fas fa-plus"></i> Tambah Siswa
+            </button>
         </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle" id="tableSiswa">
+            <thead class="table-success">
+                <tr><th>NIS</th><th>Nama</th><th>Kelas</th><th>Aksi</th></tr>
+            </thead>
+            <tbody>
+                @forelse($siswas as $siswa)
+                    <tr>
+                        <td>{{ $siswa->nis }}</td>
+                        <td>{{ $siswa->name }}</td>
+                        <td>{{ $siswa->kelas }}</td>
+                        <td>
+                            <a href="{{ route('admin.siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                            <form action="{{ route('admin.siswa.delete', $siswa->id) }}" method="POST" style="display:inline-block">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty 
+                    <tr><td colspan="4" class="text-center text-muted">Belum ada siswa</td></tr>
+                @endforelse
+                <!-- script untuk search siswa-->
+                <script>
+                      document.getElementById("searchSiswa")?.addEventListener("keyup", function () {
+                      const filter = this.value.toLowerCase();
+                      const rows = document.querySelectorAll("#tableSiswa tbody tr");
+
+                      rows.forEach(row => {
+                      const text = row.textContent.toLowerCase();
+                      row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
         <!-- ADMIN -->
 <div class="tab-pane fade" id="admin">

@@ -211,4 +211,22 @@ class AdminController extends Controller
     $admin = User::findOrFail($id);
     return view('admin.admin_edit', compact('admin'));
 }
+
+    //search function admin siswa
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $siswas = User::where('role', 'siswa')
+        ->when($search, function ($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('nis', 'like', "%{$search}%")
+                  ->orWhere('kelas', 'like', "%{$search}%");
+        })
+        ->paginate(10);
+
+    return view('admin.dashboard', compact('siswas'));
 }
+
+}
+
