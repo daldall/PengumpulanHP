@@ -1,5 +1,5 @@
 @extends('layouts.app2')
-
+@include('include.navbar')
 @section('content')
 <style>
     /* Biar tinggi minimal tab sama semua */
