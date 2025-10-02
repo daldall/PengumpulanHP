@@ -23,7 +23,6 @@
             <div class="mb-3">
                 <label class="form-label">Role</label>
                 <select name="role" class="form-control" required>
-                    <option value="admin" {{ old('role', $guru->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="guru" {{ old('role', $guru->role) == 'guru' ? 'selected' : '' }}>Guru</option>
                     <option value="siswa" {{ old('role', $guru->role) == 'siswa' ? 'selected' : '' }}>Siswa</option>
                 </select>
