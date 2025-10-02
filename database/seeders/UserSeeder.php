@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
-            'password' => Hash::make('admin123'), // password bisa diubah sesuai kebutuhan
+            'password' => Hash::make('admin123'), //ini bisa di ganti password nya sesuai yang kamu mau
             'role' => 'admin',
         ]);
         
@@ -26,11 +26,11 @@ class UserSeeder extends Seeder
         ]);
 
         // Create Sample Students
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             User::create([
                 'nis' => str_pad($i, 4, '0', STR_PAD_LEFT),
                 'name' => 'Siswa ' . $i,
-                'kelas' => 'XII RPL ' . $i,
+                'kelas' => 'XII RPL 2',
                 'password' => Hash::make('password'),
                 'role' => 'siswa',
             ]);
