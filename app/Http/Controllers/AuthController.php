@@ -135,7 +135,7 @@ class AuthController extends Controller
                          ->with('success','Selamat datang, '.$user->name.'!');
     }
 
-    // LOGIN ADMIN GET
+    // LOGIN ADMIN
     public function loginAdmin()
     {
         return view('auth.login_admin'); // pastikan file view ada
