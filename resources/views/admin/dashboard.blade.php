@@ -19,10 +19,7 @@
 </style>
 
 <div class="container mt-4">
-    <h2 class="mb-4 fw-bold text-center">
-        <i class="fas fa-tachometer-alt"></i> Dashboard Admin
-    </h2>
-
+    <h2 class="mb-4 fw-bold text-center">Dashboard Admin</h2>
     <!-- Statistik -->
     <div class="row mb-4 text-center">
         <div class="col-md-4">
@@ -142,7 +139,83 @@
 </div>
 
 
-       
+  <!-- Modal Tambah Guru -->
+<div class="modal fade" id="modalAddGuru" tabindex="-1" aria-labelledby="modalAddGuruLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="modalAddGuruLabel">Tambah Guru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ route('admin.guru.store') }}" method="POST">
+          @csrf
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="name" class="form-label">Nama Guru</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+              <input type="password" name="password_confirmation" class="form-control" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+
+  <!-- Modal Tambah Siswa -->
+<div class="modal fade" id="modalAddSiswa" tabindex="-1" aria-labelledby="modalAddSiswaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="modalAddSiswaLabel">Tambah Siswa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ route('admin.siswa.store') }}" method="POST">
+          @csrf
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="nis" class="form-label">NIS</label>
+              <input type="text" name="nis" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">Nama Siswa</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="kelas" class="form-label">Kelas</label>
+              <input type="text" name="kelas" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+              <input type="password" name="password_confirmation" class="form-control" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  </div>
 </div>
 @endsection
