@@ -30,6 +30,7 @@ class UserSeeder extends Seeder
             User::create([
                 'nis' => str_pad($i, 4, '0', STR_PAD_LEFT),
                 'name' => 'Siswa ' . $i,
+                'email' => 'siswa' . $i . '@example.com',
                 'kelas' => 'XII RPL 2',
                 'password' => Hash::make('password'),
                 'role' => 'siswa',

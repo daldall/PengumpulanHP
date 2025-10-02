@@ -29,7 +29,6 @@
             <div class="mb-3">
                 <label class="form-label">Role</label>
                 <select name="role" class="form-control" required>
-                    <option value="admin" {{ old('role', $siswa->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="guru" {{ old('role', $siswa->role) == 'guru' ? 'selected' : '' }}>Guru</option>
                     <option value="siswa" {{ old('role', $siswa->role) == 'siswa' ? 'selected' : '' }}>Siswa</option>
                 </select>
