@@ -12,7 +12,7 @@
     <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
         {{-- QR Code --}}
         <div class="mb-3">
-            {!! QrCode::size(220)->generate(url('/pilihan')) !!}
+            {!! QrCode::size(220)->generate(route('siswa.inputqr.get', $code->id)) !!}
         </div>
 
         {{-- Kode teks --}}

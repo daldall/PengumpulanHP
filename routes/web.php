@@ -48,7 +48,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/guru/create', [AdminController::class, 'createGuru'])->name('admin.guru.create');
     Route::post('/guru/store', [AdminController::class, 'storeGuru'])->name('admin.guru.store');
     Route::get('/guru/edit/{id}', [AdminController::class, 'editGuru'])->name('admin.guru.edit');
-    Route::put('/guru/update/{id}', [AdminController::class, 'updateGuru'])->name('admin.guru.update'); 
+    Route::put('/guru/update/{id}', [AdminController::class, 'updateGuru'])->name('admin.guru.update');
     Route::delete('/guru/delete/{id}', [AdminController::class, 'deleteGuru'])->name('admin.guru.delete');
 
     // CRUD Siswa
@@ -83,6 +83,9 @@ Route::middleware(['auth', 'siswa'])->prefix('siswa')->group(function () {
     Route::get('/dashboard', [SiswaController::class, 'dashboard'])->name('siswa.dashboard');
     Route::post('/inputqr', [SiswaController::class, 'inputQR'])->name('siswa.inputqr');
     Route::get('/riwayat', [SiswaController::class, 'riwayat'])->name('siswa.riwayat');
+
+    // Tambahan untuk scan QR langsung
+    Route::get('/inputqr/{code}', [SiswaController::class, 'inputQRGet'])->name('siswa.inputqr.get');
 });
 
 // ================== DEFAULT LARAVEL AUTH ================== //
