@@ -15,13 +15,8 @@
         width: 140px;
         height: 140px;
         border-radius: 50%;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease;
     }
 
-    .logo-container img:hover {
-        transform: scale(1.05);
-    }
 
     .logo-container h2 {
         color: #fff;
@@ -201,7 +196,7 @@
                     <div class="card-body">
                         <i class="fas fa-user-graduate fa-3x mb-3"></i>
                         <h4 class="card-title">Siswa</h4>
-                        <button class="btn btn-custom">Masuk</button>
+                        <button class="btn btn-custom">Masuk Sebagai Siswa</button>
                     </div>
                 </div>
             </div>
@@ -212,7 +207,7 @@
                     <div class="card-body">
                         <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
                         <h4 class="card-title">Guru</h4>
-                        <button class="btn btn-custom">Masuk</button>
+                        <button class="btn btn-custom">Masuk Sebagai Guru</button>
                     </div>
                 </div>
             </div>
@@ -225,7 +220,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="guruPasswordModalLabel">Masukkan Password Guru</h5>
+                <h5 class="modal-title" id="guruPasswordModalLabel">Masukkan Pin Guru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="POST" action="{{ route('auth.guru.password.check') }}">
