@@ -83,9 +83,6 @@ Route::middleware(['auth', 'siswa'])->prefix('siswa')->group(function () {
     Route::get('/dashboard', [SiswaController::class, 'dashboard'])->name('siswa.dashboard');
     Route::post('/inputqr', [SiswaController::class, 'inputQR'])->name('siswa.inputqr');
     Route::get('/riwayat', [SiswaController::class, 'riwayat'])->name('siswa.riwayat');
-
-    // Tambahan untuk scan QR langsung
-    Route::get('/inputqr/{code}', [SiswaController::class, 'inputQRGet'])->name('siswa.inputqr.get');
 });
 
 // ================== DEFAULT LARAVEL AUTH ================== //
