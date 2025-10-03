@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\User;
-use App\Models\Pengumpulan;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,64 +13,56 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SiswaExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
-    protected $laporan;
-
-    public function __construct()
+    /**
+     * Mengambil data collection yang akan di-export.
+     * Logika query utama diletakkan di sini.
+     */
+    public function collection()
     {
         $today = Carbon::today('Asia/Jakarta');
 
-        $data = User::where('role', 'siswa')
+        return User::where('role', 'siswa')
             ->with(['pengumpulan' => function($query) use ($today) {
                 $query->whereDate('waktu_input', $today->toDateString());
             }])
             ->get();
+    }
 
-        $laporan = [];
-        foreach ($data as $siswa) {
-            $kumpul = $siswa->pengumpulan->where('status', 'dikumpulkan')->first();
-            $ambil = $siswa->pengumpulan->where('status', 'diambil')->first();
+    /**
+     * Memetakan data dari setiap baris collection.
+     * Logika untuk setiap baris diletakkan di sini.
+     *
+     * @param \App\Models\User $siswa
+     */
+    public function map($siswa): array
+    {
+        // Ambil data pengumpulan dari relasi yang sudah di-load
+        $kumpul = $siswa->pengumpulan->where('status', 'dikumpulkan')->first();
+        $ambil = $siswa->pengumpulan->where('status', 'diambil')->first();
 
-            $statusAkhir = 'Belum Kumpul';
-            if ($kumpul && $ambil) {
-                $statusAkhir = 'Selesai';
-            } elseif ($kumpul && !$ambil) {
-                $statusAkhir = 'Belum Ambil';
-            }
-
-            $laporan[] = [
-                'nis' => $siswa->nis,
-                'nama' => $siswa->name,
-                'kelas' => $siswa->kelas,
-                'jam_kumpul' => $kumpul ? $kumpul->waktu_input->format('H:i:s') : '-',
-                'metode_kumpul' => $kumpul ? ucfirst($kumpul->metode) : '-',
-                'jam_ambil' => $ambil ? $ambil->waktu_input->format('H:i:s') : '-',
-                'metode_ambil' => $ambil ? ucfirst($ambil->metode) : '-',
-                'status_akhir' => $statusAkhir,
-            ];
+        // Menentukan status akhir
+        $statusAkhir = 'Belum Kumpul';
+        if ($kumpul && !$ambil) {
+            $statusAkhir = 'Belum Ambil';
+        } elseif ($kumpul && $ambil) {
+            $statusAkhir = 'Selesai';
         }
 
-        $this->laporan = $laporan;
-    }
-
-    public function collection()
-    {
-        return collect($this->laporan);
-    }
-
-    public function map($data): array
-    {
         return [
-            $data['nis'],
-            $data['nama'],
-            $data['kelas'],
-            $data['jam_kumpul'],
-            $data['metode_kumpul'],
-            $data['jam_ambil'],
-            $data['metode_ambil'],
-            $data['status_akhir'],
+            $siswa->nis,
+            $siswa->name,
+            $siswa->kelas,
+            $kumpul ? $kumpul->waktu_input->format('H:i:s') : '-',
+            $kumpul ? ucfirst($kumpul->metode) : '-',
+            $ambil ? $ambil->waktu_input->format('H:i:s') : '-',
+            $ambil ? ucfirst($ambil->metode) : '-',
+            $statusAkhir,
         ];
     }
 
+    /**
+     * Menentukan header untuk tabel Excel.
+     */
     public function headings(): array
     {
         return [
@@ -86,9 +77,16 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
         ];
     }
 
+    /**
+     * Memberikan style pada sheet Excel.
+     */
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:G1')->applyFromArray([
+        // Total kolom sekarang adalah 8 (A sampai H)
+        $lastColumn = 'H';
+
+        // Style untuk header (baris pertama)
+        $sheet->getStyle("A1:{$lastColumn}1")->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF']
@@ -104,7 +102,9 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
         ]);
 
         $lastRow = $sheet->getHighestRow();
-        $sheet->getStyle("A1:G{$lastRow}")->applyFromArray([
+
+        // Style border untuk seluruh tabel
+        $sheet->getStyle("A1:{$lastColumn}{$lastRow}")->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => 'thin',
@@ -113,6 +113,9 @@ class SiswaExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             ]
         ]);
 
-        $sheet->getStyle("C2:G{$lastRow}")->getAlignment()->setHorizontal('center');
+        // Alignment center untuk kolom C sampai H
+        $sheet->getStyle("C2:{$lastColumn}{$lastRow}")->getAlignment()->setHorizontal('center');
+
+        return $sheet;
     }
 }
