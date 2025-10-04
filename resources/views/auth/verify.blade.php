@@ -6,7 +6,7 @@
         <div class="col-md-5">
             <div class="card shadow-lg border-0 rounded-4" style="background-color:#fff;">
                 <div class="card-header text-center" style="background: linear-gradient(135deg,rgb(161, 188, 255),rgb(141, 197, 252)); color:#fff; border-top-left-radius:0.75rem; border-top-right-radius:0.75rem;">
-                    <img src="{{ asset('images/Sistem.png') }}" alt="Logo Sekolah" class="mb-2" width="70" style="object-fit:contain;">
+                    <img src="{{ asset('images/yasfat.png') }}" alt="Logo Sekolah" class="mb-2" width="70" style="object-fit:contain;">
                     <h4 class="fw-bold mb-0">Verifikasi Email</h4>
                     <small>Silakan cek email Anda untuk melanjutkan</small>
                 </div>

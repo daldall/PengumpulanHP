@@ -12,7 +12,7 @@
 
                 {{-- Header --}}
                 <div class="text-center mb-4 mb-md-5">
-                    <img src="{{ asset('images/Sistem.png') }}" alt="Logo Sekolah" class="mb-3 mb-md-4" width="70" style="object-fit:contain;">
+                    <img src="{{ asset('images/yasfat.png') }}" alt="Logo Sekolah" class="mb-3 mb-md-4" width="70" style="object-fit:contain;">
                     <h4 class="fw-bold mb-0 text-white fs-4 fs-md-3">Daftar Akun Siswa</h4>
                     <small class="text-light fs-6">Isi data di bawah untuk registrasi</small>
                 </div>

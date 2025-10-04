@@ -12,7 +12,7 @@
 
                 {{-- Header --}}
                 <div class="text-center mb-4 mb-md-5">
-                    <img src="{{ asset('images/Sistem.png') }}"
+                    <img src="{{ asset('images/yasfat.png') }}"
                          alt="Logo Sekolah"
                          class="mb-3 mb-md-4"
                          width="70"

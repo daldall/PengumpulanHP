@@ -12,7 +12,7 @@
 
                 {{-- Header --}}
                 <div class="text-center mb-4">
-                    <img src="{{ asset('images/Sistem.png') }}" alt="Logo Sekolah" class="mb-3" width="70" style="object-fit:contain;">
+                    <img src="{{ asset('images/yasfat.png') }}" alt="Logo Sekolah" class="mb-3" width="70" style="object-fit:contain;">
                     <h4 class="fw-bold mb-0 text-white">Login Admin</h4>
                     <small class="text-light">Silakan login menggunakan Email & Password</small>
                 </div>
