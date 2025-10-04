@@ -12,10 +12,10 @@
 
                 {{-- Header --}}
                 <div class="text-center mb-4 mb-md-5">
-                    <img src="{{ asset('images/yasfat.png') }}" 
-                         alt="Logo Sekolah" 
-                         class="mb-3 mb-md-4" 
-                         width="70" 
+                    <img src="{{ asset('images/Sistem.png') }}"
+                         alt="Logo Sekolah"
+                         class="mb-3 mb-md-4"
+                         width="70"
                          style="object-fit:contain;">
                     <h4 class="fw-bold mb-0 text-white fs-4 fs-md-3">Daftar Akun Guru</h4>
                     <small class="text-light fs-6">Isi data di bawah untuk registrasi</small>
@@ -106,9 +106,9 @@ html, body {
 .register-wrapper {
     min-height: 100vh;
     height: auto;
-    width: 100vw;       
-    margin: 0;         
-    padding: 15px;        
+    width: 100vw;
+    margin: 0;
+    padding: 15px;
     background: linear-gradient(to bottom, #0d47a1, #6200ea);
     position: relative;
     font-family: 'Poppins', sans-serif;
@@ -199,29 +199,29 @@ button.register-btn:hover {
     .half-circle {
         display: none;
     }
-    
+
     .register-wrapper {
         padding: 10px;
         min-height: 100vh;
     }
-    
+
     .register-card {
         padding: 1.5rem !important;
     }
-    
+
     .register-card img {
         width: 60px !important;
     }
-    
+
     .register-card h4 {
         font-size: 1.3rem !important;
     }
-    
+
     .form-control {
         padding: 10px 12px;
         font-size: 14px;
     }
-    
+
     .register-btn {
         padding: 10px !important;
         font-size: 14px !important;
@@ -234,7 +234,7 @@ button.register-btn:hover {
         width: 500px;
         height: 500px;
     }
-    
+
     .register-wrapper {
         min-height: 100vh;
     }

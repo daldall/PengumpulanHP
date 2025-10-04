@@ -2,17 +2,17 @@
 
 @section('content')
 <div class="login-wrapper d-flex align-items-center justify-content-center">
-    
+
     {{-- Setengah lingkaran kiri --}}
     <div class="half-circle"></div>
 
     <div class="row justify-content-center w-100 position-relative">
         <div class="col-md-4">
             <div class="login-card shadow-lg border-0 rounded-4 p-4">
-                
+
                 {{-- Header --}}
                 <div class="text-center mb-4">
-                    <img src="{{ asset('images/yasfat.png') }}" alt="Logo Sekolah" class="mb-3" width="70" style="object-fit:contain;">
+                    <img src="{{ asset('images/Sistem.png') }}" alt="Logo Sekolah" class="mb-3" width="70" style="object-fit:contain;">
                     <h4 class="fw-bold mb-0 text-white">Login Siswa</h4>
                     <small class="text-light">Silakan login menggunakan NIS & Password</small>
                 </div>
@@ -80,9 +80,9 @@
     /* Background Gradient */
     .login-wrapper {
         min-height: 100vh;
-        width: 100vw;       
-        margin: 0;         
-        padding: 0;        
+        width: 100vw;
+        margin: 0;
+        padding: 0;
         background: linear-gradient(to bottom, #0d47a1, #6200ea);
         position: relative;
         font-family: 'Poppins', sans-serif;

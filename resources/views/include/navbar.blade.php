@@ -4,7 +4,7 @@
         {{-- Logo + Nama Sekolah --}}
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}"
            style="color:white; font-weight:600; gap:0.5rem;">
-            <img src="{{ asset('images/yasfat.png') }}" alt="Logo Sekolah" width="35" height="35" style="object-fit:contain;">
+            <img src="{{ asset('images/Sistem.png') }}" alt="Logo Sekolah" width="35" height="35" style="object-fit:contain;">
             <span style="line-height:1; font-size:1rem;">Sistem Pengumpulan HP</span>
         </a>
 
@@ -54,7 +54,7 @@
                                     <i class="fa fa-user-graduate"></i> Dashboard Siswa
                                 </a>
                             </li>
-                            <li class="nav-item"> 
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('siswa.riwayat') }}" style="color:white">
                                     <i class="fa fa-history"></i> Riwayat
                                 </a>
