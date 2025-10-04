@@ -183,7 +183,7 @@
         {{-- Logo --}}
         <div class="logo-container text-center mb-5">
             <a href="{{ route('auth.login.admin') }}" class="text-decoration-none">
-                <img src="{{ asset('images/Sistem.png') }}" alt="Yasfat Logo">
+                <img src="{{ asset('images/yasfat.png') }}" alt="Yasfat Logo">
             </a>
             <h2>Sistem Pengumpulan HP Yasfat</h2>
             <p>Silakan pilih role untuk masuk</p>
