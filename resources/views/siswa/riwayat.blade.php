@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" 
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
                      style="border-top-left-radius:0.75rem; border-top-right-radius:0.75rem;">
                     <h5 class="mb-0 fw-bold">Riwayat Pengumpulan HP</h5>
                     <a href="{{ route('siswa.dashboard') }}" class="btn btn-sm btn-light fw-bold">Kembali</a>
@@ -19,7 +19,6 @@
                                     <tr>
                                         <th>Tanggal</th>
                                         <th>Waktu</th>
-                                        <th>Jenis</th>
                                         <th>Status</th>
                                         <th>Metode</th>
                                         <th>Kode</th>
@@ -30,13 +29,6 @@
                                     <tr style="transition: background 0.3s;">
                                         <td>{{ $item->waktu_input->format('d/m/Y') }}</td>
                                         <td>{{ $item->waktu_input->format('H:i:s') }}</td>
-                                        <td>
-                                            @if($item->code)
-                                                <span class="badge bg-info text-dark">{{ ucfirst($item->code->jenis) }}</span>
-                                            @else
-                                                <span class="badge bg-secondary">Manual</span>
-                                            @endif
-                                        </td>
                                         <td>
                                             @if($item->status === 'dikumpulkan')
                                                 <span class="badge bg-success">Dikumpulkan</span>
