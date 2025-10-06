@@ -3,50 +3,28 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 
 // ================== ROOT ================== //
-Route::get('/', function () {
-    return redirect()->route('auth.pilihan');
-});
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('home');
 
 Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->name('scan.code');
 
-
 // ================== AUTH ================== //
-Route::get('/pilihan', [AuthController::class, 'pilihan'])->name('auth.pilihan');
-
-// ----- CEK PASSWORD GURU ----- //
-Route::post('/guru/password/check', [AuthController::class, 'checkGuruPassword'])->name('auth.guru.password.check');
-
-// ----- LOGIN & REGISTER SISWA ----- //
-Route::get('/login/siswa', [AuthController::class, 'loginSiswa'])->name('auth.login.siswa');
-Route::post('/login/siswa', [AuthController::class, 'loginSiswaPost'])->name('auth.login.siswa.post');
-
-Route::get('/register/siswa', [AuthController::class, 'registerSiswa'])->name('auth.register.siswa');
-Route::post('/register/siswa', [AuthController::class, 'registerSiswaPost'])->name('auth.register.siswa.post');
-
-// ----- LOGIN & REGISTER GURU ----- //
-Route::get('/login/guru', [AuthController::class, 'loginGuru'])->name('auth.login.guru');
-Route::post('/login/guru', [AuthController::class, 'loginGuruPost'])->name('auth.login.guru.post');
-
-Route::get('/register/guru', [AuthController::class, 'registerGuru'])->name('auth.register.guru');
-Route::post('/register/guru', [AuthController::class, 'registerGuruPost'])->name('auth.register.guru.post');
-
-// ----- LOGIN ADMIN ----- //
-Route::get('/login/admin', [AuthController::class, 'loginAdmin'])->name('auth.login.admin');
-Route::post('/login/admin', [AuthController::class, 'loginAdminPost'])->name('auth.login.admin.post');
-
-// ----- LOGOUT ----- //
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ================== ADMIN ================== //
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+       // Export routes
+       Route::get('/guru/export-excel', [AdminController::class, 'exportGuruExcel'])->name('admin.guru.export-excel');
+       Route::get('/guru/export-pdf', [AdminController::class, 'exportGuruPDF'])->name('admin.guru.export-pdf');
+       Route::get('/siswa/export-excel', [AdminController::class, 'exportSiswaExcel'])->name('admin.siswa.export-excel');
+       Route::get('/siswa/export-pdf', [AdminController::class, 'exportSiswaPDF'])->name('admin.siswa.export-pdf');
     // CRUD Guru
     Route::get('/guru/create', [AdminController::class, 'createGuru'])->name('admin.guru.create');
     Route::post('/guru/store', [AdminController::class, 'storeGuru'])->name('admin.guru.store');
@@ -81,14 +59,9 @@ Route::middleware(['auth', 'guru'])->prefix('guru')->group(function () {
     Route::post('/toggle-code/{id}', [GuruController::class, 'toggleCode'])->name('guru.toggle-code');
 });
 
-
 // ================== SISWA ================== //
 Route::middleware(['auth', 'siswa'])->prefix('siswa')->group(function () {
     Route::get('/dashboard', [SiswaController::class, 'dashboard'])->name('siswa.dashboard');
     Route::post('/inputqr', [SiswaController::class, 'inputQR'])->name('siswa.inputqr');
     Route::get('/riwayat', [SiswaController::class, 'riwayat'])->name('siswa.riwayat');
 });
-
-// ================== DEFAULT LARAVEL AUTH ================== //
-Auth::routes();
-Route::get('/home', [HomeController::class, 'index'])->name('home');

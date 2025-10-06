@@ -9,168 +9,55 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Halaman Pilihan Siswa/Guru
-    public function pilihan()
+    // Halaman utama dengan form login terpadu
+    public function showLoginForm()
     {
-        return view('pilihan');
+        return view('welcome');
     }
 
-    // Login Siswa
-    public function loginSiswa()
-    {
-        return view('auth.login_siswa');
-    }
-
-    // Register Siswa
-    public function registerSiswa()
-    {
-        return view('auth.register_siswa');
-    }
-
-    // Login Guru
-    public function loginGuru()
-    {
-        return view('auth.login_guru');
-    }
-
-    // LOGIN GURU POST
-    public function loginGuruPost(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        // login hanya jika role = guru
-        if (Auth::attempt(array_merge($credentials, ['role' => 'guru']))) {
-            $request->session()->regenerate();
-            return redirect()->intended('/guru/dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'Email atau password salah',
-        ]);
-    }
-
-    // Register Guru
-    public function registerGuru()
-    {
-        return view('auth.register_guru');
-    }
-
-    // Cek password guru
-    public function checkGuruPassword(Request $request)
+    // Login Handler untuk semua tipe pengguna
+    public function login(Request $request)
     {
         $request->validate([
-            'guru_password' => 'required'
+            'login_id' => 'required',
+            'password' => 'required',
         ]);
 
-        if ($request->guru_password === 'guru123') {
-            return redirect()->route('auth.login.guru');
-        } else {
-            return back()->withErrors(['guru_password' => 'Password guru salah!']);
-        }
-    }
+        // Cek apakah login menggunakan email atau NIS
+        $loginField = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'nis';
 
-    public function loginSiswaPost(Request $request)
-    {
-        $credentials = $request->validate([
-            'nis' => ['required'],
-            'password' => ['required'],
-        ]);
+        $credentials = [
+            $loginField => $request->login_id,
+            'password' => $request->password
+        ];
 
-        if (Auth::attempt(['nis'=>$request->nis,'password'=>$request->password])) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Cek apakah ada data scan dalam session
-            if (session()->has('scan_kode') && session()->has('scan_jenis')) {
+            // Cek apakah ada data scan dalam session untuk siswa
+            if (Auth::user()->role === 'siswa' && session()->has('scan_kode') && session()->has('scan_jenis')) {
                 $kode = session('scan_kode');
                 $jenis = session('scan_jenis');
-
-                // Hapus data scan dari session
                 session()->forget(['scan_kode', 'scan_jenis']);
-
-                // Redirect ke proses scan code
                 return redirect()->route('scan.code', ['kode' => $kode, 'jenis' => $jenis]);
             }
 
-            return redirect()->intended('/siswa/dashboard');
+            // Redirect berdasarkan role
+            switch (Auth::user()->role) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard');
+                case 'guru':
+                    return redirect()->route('guru.dashboard');
+                case 'siswa':
+                    return redirect()->route('siswa.dashboard');
+                default:
+                    return redirect('/');
+            }
         }
 
         return back()->withErrors([
-            'nis' => 'NIS atau password salah',
-        ]);
-    }
-
-    // REGISTER GURU POST
-    public function registerGuruPost(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email'=> 'required|email|unique:users,email',
-            'password'=>'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'role'=>'guru',
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('guru.dashboard')
-                         ->with('success','Selamat datang, '.$user->name.'!');
-    }
-
-    // REGISTER SISWA POST
-    public function registerSiswaPost(Request $request)
-    {
-        $request->validate([
-            'name'=>'required|string|max:255',
-            'nis'=>'required|string|max:20|unique:users,nis',
-            'kelas'=>'required|string|max:20',
-            'password'=>'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name'=>$request->name,
-            'nis'=>$request->nis,
-            'kelas'=>$request->kelas,
-            'password'=>Hash::make($request->password),
-            'role'=>'siswa',
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('siswa.dashboard')
-                         ->with('success','Selamat datang, '.$user->name.'!');
-    }
-
-    // LOGIN ADMIN
-    public function loginAdmin()
-    {
-        return view('auth.login_admin'); // pastikan file view ada
-    }
-
-    // LOGIN ADMIN POST
-    public function loginAdminPost(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required','email'],
-            'password' => ['required'],
-        ]);
-
-        // login hanya jika role = admin
-        if (Auth::attempt(array_merge($credentials, ['role' => 'admin']))) {
-            $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'Email atau password salah / bukan admin',
-        ]);
+            'login_id' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+        ])->withInput($request->only('login_id', 'remember'));
     }
 
     // LOGOUT
@@ -182,14 +69,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        if ($user && $user->role === 'guru') {
-            return redirect()->route('auth.login.guru')->with('success', 'Anda berhasil logout.');
-        } elseif ($user && $user->role === 'siswa') {
-            return redirect()->route('auth.login.siswa')->with('success', 'Anda berhasil logout.');
-        } elseif ($user && $user->role === 'admin') {
-            return redirect()->route('auth.login.admin')->with('success', 'Anda berhasil logout.');
-        }
-
-        return redirect()->route('pilihan');
+        // Menggunakan home daripada login untuk sesuai dengan web.php Anda
+        return redirect()->route('home')->with('success', 'Anda berhasil logout.');
     }
 }

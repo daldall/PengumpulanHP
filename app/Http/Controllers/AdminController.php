@@ -5,32 +5,71 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+// Import untuk fitur export
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GuruExport;
+use App\Exports\SiswaExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
+    /**
+     * Pastikan hanya admin yang bisa mengakses controller ini.
+     */
     public function __construct()
     {
         $this->middleware(['auth', 'admin']);
     }
 
-    public function dashboard()
+    /**
+     * Menampilkan halaman dashboard utama untuk admin.
+     * Method ini juga menangani logika untuk pencarian siswa.
+     */
+    public function dashboard(Request $request)
     {
-        // Hitung total per role
+        // Hitung total data untuk kartu statistik
         $totalGuru   = User::where('role', 'guru')->count();
         $totalSiswa  = User::where('role', 'siswa')->count();
         $totalAdmin  = User::where('role', 'admin')->count();
 
-        // Ambil data per role
-        $gurus  = User::where('role', 'guru')->get();
-        $siswas = User::where('role', 'siswa')->get();
-        $admins = User::where('role', 'admin')->get();
+        // Tentukan tab aktif dari query parameter
+        $activeTab = $request->query('tab', 'guru');
 
-        // Ambil user terbaru
+        // Ambil data guru dengan pagination dan tambahkan parameter tab
+        $gurus = User::where('role', 'guru')
+            ->orderBy('name')
+            ->paginate(10, ['*'], 'guru_page')
+            ->appends(['tab' => $activeTab]);
+
+        $admins = User::where('role', 'admin')
+            ->orderBy('name')
+            ->paginate(10, ['*'], 'admin_page')
+            ->appends(['tab' => $activeTab]);
+
+        // Ambil kata kunci pencarian dari input form
+        $search = $request->input('search');
+
+        // Query untuk data siswa, dengan kondisi pencarian jika ada
+        $siswas = User::where('role', 'siswa')
+            ->when($search, function ($query, $search) {
+                // Grupkan kondisi 'where' untuk logika pencarian yang benar
+                return $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('nis', 'like', "%{$search}%")
+                      ->orWhere('kelas', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name')
+            ->paginate(10, ['*'], 'siswa_page')
+            ->appends(['search' => $search, 'tab' => $activeTab]); // Tambahkan parameter tab
+
+        // Ambil 5 user terbaru yang ditambahkan
         $latestUsers = User::whereIn('role', ['guru', 'siswa', 'admin'])
-                          ->orderBy('created_at', 'desc')
-                          ->limit(5)
-                          ->get();
+                             ->orderBy('created_at', 'desc')
+                             ->limit(5)
+                             ->get();
 
+        // Kirim semua data yang dibutuhkan ke view, termasuk activeTab
         return view('admin.dashboard', compact(
             'totalGuru',
             'totalSiswa',
@@ -38,11 +77,13 @@ class AdminController extends Controller
             'latestUsers',
             'gurus',
             'siswas',
-            'admins'
+            'admins',
+            'activeTab'
         ));
     }
 
     // ================== CRUD GURU ==================
+
     public function storeGuru(Request $request)
     {
         $request->validate([
@@ -58,7 +99,13 @@ class AdminController extends Controller
             'role' => 'guru',
         ]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Guru berhasil ditambahkan!');
+        return redirect()->route('admin.dashboard', ['tab' => 'guru'])->with('success', 'Guru berhasil ditambahkan!');
+    }
+
+    public function editGuru($id)
+    {
+        $guru = User::findOrFail($id);
+        return view('admin.guru_edit', compact('guru'));
     }
 
     public function updateGuru(Request $request, $id)
@@ -73,15 +120,14 @@ class AdminController extends Controller
 
         $guru->name = $request->name;
         $guru->email = $request->email;
-        $guru->role = $request->role;
 
-        if ($request->password) {
+        if ($request->filled('password')) {
             $guru->password = Hash::make($request->password);
         }
 
         $guru->save();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Guru berhasil diupdate!');
+        return redirect()->route('admin.dashboard', ['tab' => 'guru'])->with('success', 'Data guru berhasil diupdate!');
     }
 
     public function deleteGuru($id)
@@ -89,16 +135,11 @@ class AdminController extends Controller
         $guru = User::findOrFail($id);
         $guru->delete();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Guru berhasil dihapus!');
+        return redirect()->route('admin.dashboard', ['tab' => 'guru'])->with('success', 'Guru berhasil dihapus!');
     }
 
-    public function editGuru($id)
-{
-    $guru = User::findOrFail($id);
-    return view('admin.guru_edit', compact('guru'));
-}
-
     // ================== CRUD SISWA ==================
+
     public function storeSiswa(Request $request)
     {
         $request->validate([
@@ -116,7 +157,13 @@ class AdminController extends Controller
             'role' => 'siswa',
         ]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Siswa berhasil ditambahkan!');
+        return redirect()->route('admin.dashboard', ['tab' => 'siswa'])->with('success', 'Siswa berhasil ditambahkan!');
+    }
+
+    public function editSiswa($id)
+    {
+        $siswa = User::findOrFail($id);
+        return view('admin.siswa_edit', compact('siswa'));
     }
 
     public function updateSiswa(Request $request, $id)
@@ -133,14 +180,14 @@ class AdminController extends Controller
         $siswa->name = $request->name;
         $siswa->nis = $request->nis;
         $siswa->kelas = $request->kelas;
-        $siswa->role = $request->role;
-        if ($request->password) {
+
+        if ($request->filled('password')) {
             $siswa->password = Hash::make($request->password);
         }
 
         $siswa->save();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Siswa berhasil diupdate!');
+        return redirect()->route('admin.dashboard', ['tab' => 'siswa'])->with('success', 'Data siswa berhasil diupdate!');
     }
 
     public function deleteSiswa($id)
@@ -148,85 +195,31 @@ class AdminController extends Controller
         $siswa = User::findOrFail($id);
         $siswa->delete();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Siswa berhasil dihapus!');
+        return redirect()->route('admin.dashboard', ['tab' => 'siswa'])->with('success', 'Siswa berhasil dihapus!');
     }
 
-    public function editSiswa($id)
-{
-    $siswa = User::findOrFail($id);
-    return view('admin.siswa_edit', compact('siswa'));
-}
 
-    // ================== CRUD ADMIN ==================
-    public function storeAdmin(Request $request)
+    public function exportGuruExcel()
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin',
-        ]);
-
-        return redirect()->route('admin.dashboard')->with('success', 'Admin berhasil ditambahkan!');
+        return Excel::download(new GuruExport, 'data-guru-'.date('Y-m-d').'.xlsx');
     }
 
-    public function updateAdmin(Request $request, $id)
+    public function exportGuruPDF()
     {
-        $admin = User::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-        $admin->role = $request->role;
-        if ($request->password) {
-            $admin->password = Hash::make($request->password);
-        }
-
-        $admin->save();
-
-        return redirect()->route('admin.dashboard')->with('success', 'Admin berhasil diupdate!');
+        $gurus = User::where('role', 'guru')->get();
+        $pdf = PDF::loadView('exports.guru-pdf', ['gurus' => $gurus]);
+        return $pdf->download('data-guru-'.date('Y-m-d').'.pdf');
     }
 
-    public function deleteAdmin($id)
+    public function exportSiswaExcel()
     {
-        $admin = User::findOrFail($id);
-        $admin->delete();
-
-        return redirect()->route('admin.dashboard')->with('success', 'Admin berhasil dihapus!');
+        return Excel::download(new SiswaExport, 'data-siswa-'.date('Y-m-d').'.xlsx');
     }
 
-    public function editAdmin($id)
-{
-    $admin = User::findOrFail($id);
-    return view('admin.admin_edit', compact('admin'));
+    public function exportSiswaPDF()
+    {
+        $siswas = User::where('role', 'siswa')->get();
+        $pdf = PDF::loadView('exports.siswa-pdf', ['siswas' => $siswas]);
+        return $pdf->download('data-siswa-'.date('Y-m-d').'.pdf');
+    }
 }
-
-    //search function admin siswa
-    public function index(Request $request)
-{
-    $search = $request->input('search');
-
-    $siswas = User::where('role', 'siswa')
-        ->when($search, function ($query, $search) {
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('nis', 'like', "%{$search}%")
-                  ->orWhere('kelas', 'like', "%{$search}%");
-        })
-        ->paginate(10);
-
-    return view('admin.dashboard', compact('siswas'));
-}
-
-}
-
