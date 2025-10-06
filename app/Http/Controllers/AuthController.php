@@ -33,6 +33,25 @@ class AuthController extends Controller
         return view('auth.login_guru');
     }
 
+    // LOGIN GURU POST
+    public function loginGuruPost(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        // login hanya jika role = guru
+        if (Auth::attempt(array_merge($credentials, ['role' => 'guru']))) {
+            $request->session()->regenerate();
+            return redirect()->intended('/guru/dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah',
+        ]);
+    }
+
     // Register Guru
     public function registerGuru()
     {
@@ -53,25 +72,6 @@ class AuthController extends Controller
         }
     }
 
-    // LOGIN GURU POST
-    public function loginGuruPost(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required','email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('/guru/dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'Email atau password salah',
-        ]);
-    }
-
-    // LOGIN SISWA POST
     public function loginSiswaPost(Request $request)
     {
         $credentials = $request->validate([
@@ -81,6 +81,19 @@ class AuthController extends Controller
 
         if (Auth::attempt(['nis'=>$request->nis,'password'=>$request->password])) {
             $request->session()->regenerate();
+
+            // Cek apakah ada data scan dalam session
+            if (session()->has('scan_kode') && session()->has('scan_jenis')) {
+                $kode = session('scan_kode');
+                $jenis = session('scan_jenis');
+
+                // Hapus data scan dari session
+                session()->forget(['scan_kode', 'scan_jenis']);
+
+                // Redirect ke proses scan code
+                return redirect()->route('scan.code', ['kode' => $kode, 'jenis' => $jenis]);
+            }
+
             return redirect()->intended('/siswa/dashboard');
         }
 

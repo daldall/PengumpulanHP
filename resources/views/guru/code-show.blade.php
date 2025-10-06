@@ -10,9 +10,9 @@
 
     {{-- Card utama --}}
     <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
-        {{-- QR Code --}}
+        {{-- QR Code dengan URL endpoint khusus --}}
         <div class="mb-3">
-            {!! QrCode::size(220)->generate(url('/login/siswa')) !!}
+            {!! QrCode::size(220)->generate(url("/scan-code/{$code->kode}/{$code->jenis}")) !!}
         </div>
 
         {{-- Kode teks --}}

@@ -13,6 +13,9 @@ Route::get('/', function () {
     return redirect()->route('auth.pilihan');
 });
 
+Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->name('scan.code');
+
+
 // ================== AUTH ================== //
 Route::get('/pilihan', [AuthController::class, 'pilihan'])->name('auth.pilihan');
 
@@ -77,6 +80,7 @@ Route::middleware(['auth', 'guru'])->prefix('guru')->group(function () {
     Route::get('/export-pdf', [GuruController::class, 'exportPDF'])->name('guru.export-pdf');
     Route::post('/toggle-code/{id}', [GuruController::class, 'toggleCode'])->name('guru.toggle-code');
 });
+
 
 // ================== SISWA ================== //
 Route::middleware(['auth', 'siswa'])->prefix('siswa')->group(function () {
