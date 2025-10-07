@@ -21,5 +21,55 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Session Management Script -->
+    <script>
+        // Auto-refresh CSRF token setiap 10 menit
+        setInterval(function() {
+            fetch('/refresh-csrf', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.token) {
+                    document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.token);
+                    // Update semua form CSRF token
+                    document.querySelectorAll('input[name="_token"]').forEach(function(token) {
+                        token.value = data.token;
+                    });
+                }
+            })
+            .catch(error => {
+                console.log('CSRF refresh failed:', error);
+            });
+        }, 600000); // 10 menit
+
+        // Warning sebelum session expired (5 menit sebelum expire)
+        setInterval(function() {
+            fetch('/refresh-csrf', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    // Session expired
+                    alert('Session Anda akan segera berakhir. Harap simpan pekerjaan Anda.');
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 30000); // Redirect setelah 30 detik
+                }
+            })
+            .catch(error => {
+                console.log('Session check failed:', error);
+            });
+        }, 660000); // 11 menit
+    </script>
 </body>
 </html>

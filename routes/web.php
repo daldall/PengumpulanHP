@@ -16,6 +16,11 @@ Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->n
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Route untuk refresh CSRF token
+Route::post('/refresh-csrf', function () {
+    return response()->json(['token' => csrf_token()]);
+})->name('refresh.csrf');
+
 // ================== ADMIN ================== //
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
