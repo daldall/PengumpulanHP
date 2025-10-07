@@ -31,37 +31,11 @@ class AuthController extends Controller
             'password' => $request->password
         ];
 
-        // Debug info
-        \Log::info('Login attempt', [
-            'login_field' => $loginField,
-            'login_id' => $request->login_id,
-            'credentials' => $credentials
-        ]);
-
-        // Cek apakah user ada di database
-        $user = User::where($loginField, $request->login_id)->first();
-        if (!$user) {
-            \Log::info('User not found', ['field' => $loginField, 'value' => $request->login_id]);
-            return back()->withErrors([
-                'login_id' => 'User tidak ditemukan.',
-            ])->withInput($request->only('login_id'));
-        }
-
-        // Cek password
-        if (!Hash::check($request->password, $user->password)) {
-            \Log::info('Password mismatch', ['user_id' => $user->id]);
-            return back()->withErrors([
-                'login_id' => 'Password salah.',
-            ])->withInput($request->only('login_id'));
-        }
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            
+
             // Set initial last activity
             session(['last_activity' => time()]);
-
-            \Log::info('Login successful', ['user_id' => Auth::id(), 'role' => Auth::user()->role]);
 
             // Cek apakah ada data scan dalam session untuk siswa
             if (Auth::user()->role === 'siswa' && session()->has('scan_kode') && session()->has('scan_jenis')) {
@@ -84,10 +58,9 @@ class AuthController extends Controller
             }
         }
 
-        \Log::error('Auth::attempt failed despite manual checks passing');
         return back()->withErrors([
-            'login_id' => 'Login gagal. Silakan coba lagi.',
-        ])->withInput($request->only('login_id'));
+            'login_id' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+        ])->withInput($request->only('login_id', 'remember'));
     }
 
     // LOGOUT
