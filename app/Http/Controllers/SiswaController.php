@@ -109,14 +109,14 @@ class SiswaController extends Controller
 
         if (!$code) {
             // Jika kode tidak valid, redirect dengan pesan error
-            return redirect()->route('auth.login.siswa')
+            return redirect()->route('home')
                 ->with('error', 'Kode tidak valid atau sudah tidak aktif');
         }
 
         // Jika belum login, simpan data di session dan redirect ke login
         if (!Auth::check()) {
             session(['scan_kode' => $kode, 'scan_jenis' => $jenis]);
-            return redirect()->route('auth.login.siswa')
+            return redirect()->route('home')
                 ->with('message', 'Silakan login untuk melanjutkan proses pengumpulan/pengambilan HP');
         }
 
