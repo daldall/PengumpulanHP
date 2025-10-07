@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Auth;
 // ================== ROOT ================== //
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('home');
 
-Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->name('scan.code');
+
 
 // ================== AUTH ================== //
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route untuk refresh CSRF token
@@ -21,6 +22,8 @@ Route::post('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 })->name('refresh.csrf');
 
+//siswa scan code
+Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->name('scan.code');
 // ================== ADMIN ================== //
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
