@@ -6,6 +6,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 // ================== ROOT ================== //
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('home');
@@ -21,6 +22,20 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/refresh-csrf', function () {
     return response()->json(['token' => csrf_token()]);
 })->name('refresh.csrf');
+
+// Route debugging untuk test device detection (hapus setelah testing)
+Route::get('/test-device', function (Request $request) {
+    $userAgent = $request->header('User-Agent');
+    $deviceInfo = \App\Helpers\DeviceDetector::detect($userAgent);
+
+    return response()->json([
+        'user_agent' => $userAgent,
+        'detected_device' => $deviceInfo['device'],
+        'detected_browser' => $deviceInfo['browser'],
+        'device_icon' => \App\Helpers\DeviceDetector::getDeviceIcon($deviceInfo['device']),
+        'browser_icon' => \App\Helpers\DeviceDetector::getBrowserIcon($deviceInfo['browser'])
+    ]);
+});
 
 //siswa scan code
 Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->name('scan.code');

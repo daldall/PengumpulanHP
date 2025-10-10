@@ -77,7 +77,7 @@
         font-size: 0.85em;
         color: #6c757d;
     }
-    
+
     .device-badge {
         font-size: 0.75em;
         margin-left: 5px;
@@ -257,7 +257,7 @@
                                 <td>
                                     @if($siswa->last_device)
                                         <div class="device-info">
-                                            <i class="{{ \App\Helpers\DeviceDetector::getIcon($siswa->last_device) }} text-primary"></i>
+                                            <i class="{{ \App\Helpers\DeviceDetector::getDeviceIcon($siswa->last_device) }} text-primary"></i>
                                             {{ $siswa->last_device }}
                                             <br>
                                             <i class="{{ \App\Helpers\DeviceDetector::getBrowserIcon($siswa->last_browser) }} text-secondary"></i>

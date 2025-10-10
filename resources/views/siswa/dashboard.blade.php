@@ -27,10 +27,9 @@
                     <i class="fas fa-info-circle me-2"></i> Informasi Login
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
+                    <div class="row">                        <div class="col-md-4">
                             <strong>Device:</strong><br>
-                            <i class="{{ \App\Helpers\DeviceDetector::getIcon(auth()->user()->last_device ?? 'Unknown') }} text-primary me-1"></i>
+                            <i class="{{ \App\Helpers\DeviceDetector::getDeviceIcon(auth()->user()->last_device ?? 'Unknown') }} text-primary me-1"></i>
                             {{ auth()->user()->last_device ?? 'Unknown' }}
                         </div>
                         <div class="col-md-4">
