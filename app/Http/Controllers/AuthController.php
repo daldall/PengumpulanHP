@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Helpers\DeviceDetector;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -36,6 +38,18 @@ class AuthController extends Controller
 
             // Set initial last activity
             session(['last_activity' => time()]);
+
+            // Deteksi device dan browser
+            $userAgent = $request->header('User-Agent');
+            $deviceInfo = DeviceDetector::detect($userAgent);
+
+            // Update informasi login user
+            $user = Auth::user();
+            $user->update([
+                'last_device' => $deviceInfo['device'],
+                'last_browser' => $deviceInfo['browser'],
+                'last_login' => Carbon::now('Asia/Jakarta'),
+            ]);
 
             // Cek apakah ada data scan dalam session untuk siswa
             if (Auth::user()->role === 'siswa' && session()->has('scan_kode') && session()->has('scan_jenis')) {

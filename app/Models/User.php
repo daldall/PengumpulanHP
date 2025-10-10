@@ -19,6 +19,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'last_device',
+        'last_browser',
+        'last_login',
     ];
 
     protected $hidden = [
@@ -28,6 +31,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login' => 'datetime',
     ];
 
     public function pengumpulan()

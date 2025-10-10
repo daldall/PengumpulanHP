@@ -21,6 +21,31 @@
                 </div>
             @endif
 
+            {{-- Device Info Card --}}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-info-circle me-2"></i> Informasi Login
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Device:</strong><br>
+                            <i class="{{ \App\Helpers\DeviceDetector::getIcon(auth()->user()->last_device ?? 'Unknown') }} text-primary me-1"></i>
+                            {{ auth()->user()->last_device ?? 'Unknown' }}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Browser:</strong><br>
+                            <i class="{{ \App\Helpers\DeviceDetector::getBrowserIcon(auth()->user()->last_browser ?? 'Unknown') }} text-secondary me-1"></i>
+                            {{ auth()->user()->last_browser ?? 'Unknown' }}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Last Login:</strong><br>
+                            {{ auth()->user()->last_login ? auth()->user()->last_login->format('d/m/Y H:i:s') : 'Unknown' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- Status Pengumpulan & Pengambilan --}}
             <div class="row mb-4 g-4">
                 <div class="col-md-6">

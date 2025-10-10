@@ -71,6 +71,17 @@
             min-width: 150px;
         }
     }
+
+    /* Device info styling */
+    .device-info {
+        font-size: 0.85em;
+        color: #6c757d;
+    }
+    
+    .device-badge {
+        font-size: 0.75em;
+        margin-left: 5px;
+    }
 </style>
 
 <div class="container mt-4">
@@ -232,6 +243,8 @@
                             <th>NIS</th>
                             <th>Nama</th>
                             <th>Kelas</th>
+                            <th>Device Info</th>
+                            <th>Last Login</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -242,6 +255,26 @@
                                 <td>{{ $siswa->name }}</td>
                                 <td>{{ $siswa->kelas }}</td>
                                 <td>
+                                    @if($siswa->last_device)
+                                        <div class="device-info">
+                                            <i class="{{ \App\Helpers\DeviceDetector::getIcon($siswa->last_device) }} text-primary"></i>
+                                            {{ $siswa->last_device }}
+                                            <br>
+                                            <i class="{{ \App\Helpers\DeviceDetector::getBrowserIcon($siswa->last_browser) }} text-secondary"></i>
+                                            {{ $siswa->last_browser }}
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($siswa->last_login)
+                                        <small>{{ $siswa->last_login->format('d/m/Y H:i') }}</small>
+                                    @else
+                                        <span class="text-muted">Belum login</span>
+                                    @endif
+                                </td>
+                                <td>
                                     <a href="{{ route('admin.siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                     <form action="{{ route('admin.siswa.delete', $siswa->id) }}" method="POST" class="d-inline">
                                         @csrf @method('DELETE')
@@ -250,7 +283,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="text-center text-muted">Belum ada siswa</td></tr>
+                            <tr><td colspan="6" class="text-center text-muted">Belum ada siswa</td></tr>
                         @endforelse
                     </tbody>
                 </table>
