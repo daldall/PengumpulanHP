@@ -13,10 +13,10 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
-            'password' => Hash::make('admin123'), //ini bisa di ganti password nya sesuai yang kamu mau
+            'password' => Hash::make('admin123'),
             'role' => 'admin',
         ]);
-        
+
         // Create Guru Account
         User::create([
             'name' => 'Guru',
