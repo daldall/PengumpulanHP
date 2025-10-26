@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Pagination\Paginator;    
+
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL; // <-- 1. TAMBAHKAN BARIS INI
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Paginator::useBootstrap();
+        Paginator::useBootstrap(); // Baris ini biarkan saja
+
+        // 2. TAMBAHKAN BLOK INI
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
