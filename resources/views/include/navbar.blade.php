@@ -35,7 +35,18 @@
 
                 {{-- Jika user login --}}
                 @auth
-                    @if(auth()->user()->isGuru())
+                    @if(auth()->user()->role === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}" style="color:white">
+                                <i class="fa fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.analytics') }}" style="color:white">
+                                <i class="fa fa-chart-line"></i> Analytics
+                            </a>
+                        </li>
+                    @elseif(auth()->user()->isGuru())
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('guru.dashboard') }}" style="color:white">
                                 <i class="fa fa-chalkboard-teacher"></i> Dashboard Guru
@@ -47,19 +58,17 @@
                             </a>
                         </li>
                     @else
-                        {{-- Jika dia bukan admin, tampilkan menu siswa --}}
-                        @if(auth()->user()->role !== 'admin')
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('siswa.dashboard') }}" style="color:white">
-                                    <i class="fa fa-user-graduate"></i> Dashboard Siswa
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('siswa.riwayat') }}" style="color:white">
-                                    <i class="fa fa-history"></i> Riwayat
-                                </a>
-                            </li>
-                        @endif
+                        {{-- Menu siswa --}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('siswa.dashboard') }}" style="color:white">
+                                <i class="fa fa-user-graduate"></i> Dashboard Siswa
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('siswa.riwayat') }}" style="color:white">
+                                <i class="fa fa-history"></i> Riwayat
+                            </a>
+                        </li>
                     @endif
 
                     {{-- Dropdown User --}}

@@ -42,6 +42,7 @@ Route::get('/scan-code/{kode}/{jenis}', [SiswaController::class, 'scanCode'])->n
 // ================== ADMIN ================== //
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
 
        // Export routes
        Route::get('/guru/export-excel', [AdminController::class, 'exportGuruExcel'])->name('admin.guru.export-excel');

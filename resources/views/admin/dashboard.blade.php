@@ -2,400 +2,425 @@
 @include('include.navbar')
 
 @section('content')
-<style>
-    /* Biar tinggi minimal tab sama semua */
-    .tab-content {
-        min-height: 400px;
-    }
+<script src="https://cdn.tailwindcss.com"></script>
 
-    /* Biar card statistik tingginya sama */
-    .card {
-        min-height: 120px;
-    }
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-bold text-center text-gray-900 mb-8">Dashboard Admin</h2>
 
-    /* Scroll horizontal kalau tabel kepanjangan */
-    .table-responsive {
-        margin-top: 10px;
-    }
+        <!-- Quick Action Buttons -->
+        <div class="flex justify-center gap-4 mb-8">
+            <a href="{{ route('admin.analytics') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl">
+                <i class="fas fa-chart-line mr-2"></i>Analytics Dashboard
+            </a>
+        </div>
 
-    /* Styling untuk export buttons */
-    .dropdown-item {
-        display: flex;
-        align-items: center;
-        padding: 8px 16px;
-    }
-
-    .dropdown-item:hover {
-        background-color: #f8f9fa;
-    }
-
-    .dropdown-item i {
-        margin-right: 8px;
-        width: 20px;
-        text-align: center;
-    }
-    /* CSS tambahan untuk sejajarkan button dan form */
-    .action-controls {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: stretch;
-        gap: 8px;
-    }
-
-    .action-controls .btn,
-    .action-controls .input-group,
-    .action-controls .form-control {
-        height: 38px;
-    }
-
-    .action-controls .form-control {
-        min-width: 200px;
-    }
-
-    .action-controls .btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    /* Untuk layar kecil */
-    @media (max-width: 768px) {
-        .action-controls {
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .action-controls .form-control {
-            min-width: 150px;
-        }
-    }
-
-    /* Device info styling */
-    .device-info {
-        font-size: 0.85em;
-        color: #6c757d;
-    }
-
-    .device-badge {
-        font-size: 0.75em;
-        margin-left: 5px;
-    }
-</style>
-
-<div class="container mt-4">
-    <h2 class="mb-4 fw-bold text-center">Dashboard Admin</h2>
-
-    <!-- Statistik -->
-    <div class="row mb-4 text-center">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white shadow-sm border-0 d-flex align-items-center justify-content-center">
-                <div class="card-body">
-                    <h5><i class="fas fa-chalkboard-teacher"></i> Total Guru</h5>
-                    <h2>{{ $totalGuru }}</h2>
+        <!-- Statistik Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm font-medium">Total Guru</p>
+                        <h3 class="text-4xl font-bold mt-2">{{ $totalGuru }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <i class="fas fa-chalkboard-teacher text-3xl"></i>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white shadow-sm border-0 d-flex align-items-center justify-content-center">
-                <div class="card-body">
-                    <h5><i class="fas fa-user-graduate"></i> Total Siswa</h5>
-                    <h2>{{ $totalSiswa }}</h2>
+
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100 text-sm font-medium">Total Siswa</p>
+                        <h3 class="text-4xl font-bold mt-2">{{ $totalSiswa }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <i class="fas fa-user-graduate text-3xl"></i>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-dark text-white shadow-sm border-0 d-flex align-items-center justify-content-center">
-                <div class="card-body">
-                    <h5><i class="fas fa-user-shield"></i> Total Admin</h5>
-                    <h2>{{ $totalAdmin }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#guru" type="button">
-                <i class="fas fa-chalkboard-teacher"></i> Guru
-            </button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#siswa" type="button">
-                <i class="fas fa-user-graduate"></i> Siswa
-            </button>
-        </li>
-    </ul>
-
-    <div class="tab-content mt-3">
-
-       <!-- GURU -->
-<div class="tab-pane fade show active" id="guru">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-        <h4 class="mb-0">Daftar Guru</h4>
-        <div class="action-controls">
-            <!-- Dropdown Export -->
-            <div class="dropdown">
-                <button class="btn btn-info dropdown-toggle" type="button" id="exportGuruDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-file-export me-1"></i> Export
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportGuruDropdown">
-                    <li>
-                        <a class="dropdown-item" href="{{ route('admin.guru.export-excel') }}">
-                            <i class="fas fa-file-excel text-success"></i> Excel
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ route('admin.guru.export-pdf') }}">
-                            <i class="fas fa-file-pdf text-danger"></i> PDF
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Tombol Tambah -->
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddGuru">
-                <i class="fas fa-plus me-1"></i> Tambah Guru
-            </button>
-        </div>
-    </div>
-
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($gurus as $guru)
-                            <tr>
-                                <td>{{ $guru->name }}</td>
-                                <td>{{ $guru->email }}</td>
-                                <td>
-                                    <a href="{{ route('admin.guru.edit', $guru->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('admin.guru.delete', $guru->id) }}" method="POST" class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="3" class="text-center text-muted">Belum ada guru</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-                <!-- Pagination Guru -->
-                <div class="d-flex justify-content-end mt-2">
-                    {{ $gurus->withQueryString()->links() }}
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-100 text-sm font-medium">Total Admin</p>
+                        <h3 class="text-4xl font-bold mt-2">{{ $totalAdmin }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <i class="fas fa-user-shield text-3xl"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
-       <!-- SISWA -->
-<div class="tab-pane fade" id="siswa">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-        <h4 class="mb-0">Daftar Siswa</h4>
-        <div class="action-controls">
-            <!-- Pencarian -->
-            <form action="{{ route('admin.dashboard') }}" method="GET" class="input-group">
-                <input type="hidden" name="tab" value="siswa">
-                <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari siswa...">
-                <button class="btn btn-secondary">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-
-            <!-- Dropdown Export -->
-            <div class="dropdown">
-                <button class="btn btn-info dropdown-toggle" type="button" id="exportSiswaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-file-export me-1"></i> Export
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportSiswaDropdown">
-                    <li>
-                        <a class="dropdown-item" href="{{ route('admin.siswa.export-excel') }}">
-                            <i class="fas fa-file-excel text-success"></i> Excel
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="{{ route('admin.siswa.export-pdf') }}">
-                            <i class="fas fa-file-pdf text-danger"></i> PDF
-                        </a>
-                    </li>
-                </ul>
+        <!-- Tabs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex">
+                    <button class="tab-button active flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm focus:outline-none transition-colors" data-target="#guru">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i> Guru
+                    </button>
+                    <button class="tab-button flex-1 py-4 px-6 text-center border-b-2 font-medium text-sm focus:outline-none transition-colors" data-target="#siswa">
+                        <i class="fas fa-user-graduate mr-2"></i> Siswa
+                    </button>
+                </nav>
             </div>
 
-            <!-- Tombol Tambah -->
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddSiswa">
-                <i class="fas fa-plus me-1"></i> Tambah Siswa
-            </button>
-        </div>
-    </div>
+            <div class="tab-content p-6">
 
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead class="table-success">
-                        <tr>
-                            <th>NIS</th>
-                            <th>Nama</th>
-                            <th>Kelas</th>
-                            <th>Device Info</th>
-                            <th>Last Login</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($siswas as $siswa)
-                            <tr>
-                                <td>{{ $siswa->nis }}</td>
-                                <td>{{ $siswa->name }}</td>
-                                <td>{{ $siswa->kelas }}</td>
-                                <td>
-                                    @if($siswa->last_device)
-                                        <div class="device-info">
-                                            <i class="{{ \App\Helpers\DeviceDetector::getDeviceIcon($siswa->last_device) }} text-primary"></i>
-                                            {{ $siswa->last_device }}
-                                            <br>
-                                            <i class="{{ \App\Helpers\DeviceDetector::getBrowserIcon($siswa->last_browser) }} text-secondary"></i>
-                                            {{ $siswa->last_browser }}
-                                        </div>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($siswa->last_login)
-                                        <small>{{ $siswa->last_login->format('d/m/Y H:i') }}</small>
-                                    @else
-                                        <span class="text-muted">Belum login</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="{{ route('admin.siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('admin.siswa.delete', $siswa->id) }}" method="POST" class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="6" class="text-center text-muted">Belum ada siswa</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-                <!-- Pagination Siswa -->
-                <div class="d-flex justify-content-end mt-2">
-                    {{ $siswas->withQueryString()->links() }}
+                <!-- GURU -->
+                <div class="tab-pane fade show active" id="guru">
+                    <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                        <h4 class="text-lg font-bold text-gray-800 mb-0">Daftar Guru</h4>
+                        <div class="flex flex-wrap gap-3">
+                            <!-- Dropdown Export -->
+                            <div class="relative">
+                                <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-file-export mr-2"></i> Export
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.guru.export-excel') }}">
+                                            <i class="fas fa-file-excel text-green-600 mr-2"></i> Excel
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.guru.export-pdf') }}">
+                                            <i class="fas fa-file-pdf text-red-600 mr-2"></i> PDF
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Tombol Tambah -->
+                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" data-bs-toggle="modal" data-bs-target="#modalAddGuru">
+                                <i class="fas fa-plus mr-2"></i> Tambah Guru
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-blue-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse($gurus as $guru)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">{{ $guru->name }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">{{ $guru->email }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <div class="flex justify-center gap-2">
+                                                <a href="{{ route('admin.guru.edit', $guru->id) }}" class="inline-flex items-center p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('admin.guru.delete', $guru->id) }}" method="POST" class="inline">
+                                                    @csrf @method('DELETE')
+                                                    <button class="inline-flex items-center p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" onclick="return confirm('Yakin hapus guru ini?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="px-6 py-8 text-center text-gray-500">
+                                            <i class="fas fa-user-times text-4xl mb-2"></i>
+                                            <p>Belum ada guru terdaftar</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <!-- Pagination Guru -->
+                        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                            {{ $gurus->withQueryString()->links() }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SISWA -->
+                <div class="tab-pane fade" id="siswa">
+                    <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                        <h4 class="text-lg font-bold text-gray-800 mb-0">Daftar Siswa</h4>
+                        <div class="flex flex-wrap gap-3">
+                            <!-- Pencarian -->
+                            <form action="{{ route('admin.dashboard') }}" method="GET" class="flex gap-2">
+                                <input type="hidden" name="tab" value="siswa">
+                                <input type="text" name="search" value="{{ request('search') }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Cari siswa...">
+                                <button class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </form>
+
+                            <!-- Dropdown Export -->
+                            <div class="relative">
+                                <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-file-export mr-2"></i> Export
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.siswa.export-excel') }}">
+                                            <i class="fas fa-file-excel text-green-600 mr-2"></i> Excel
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.siswa.export-pdf') }}">
+                                            <i class="fas fa-file-pdf text-red-600 mr-2"></i> PDF
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Tombol Tambah -->
+                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" data-bs-toggle="modal" data-bs-target="#modalAddSiswa">
+                                <i class="fas fa-plus mr-2"></i> Tambah Siswa
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-green-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIS</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device Info</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Login</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse($siswas as $siswa)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $siswa->nis }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">{{ $siswa->name }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $siswa->kelas }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            @if($siswa->last_device)
+                                                <div class="space-y-1">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="{{ \App\Helpers\DeviceDetector::getDeviceIcon($siswa->last_device) }} text-blue-600"></i>
+                                                        <span>{{ $siswa->last_device }}</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="{{ \App\Helpers\DeviceDetector::getBrowserIcon($siswa->last_browser) }} text-purple-600"></i>
+                                                        <span>{{ $siswa->last_browser }}</span>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            @if($siswa->last_login)
+                                                {{ $siswa->last_login->format('d/m/Y H:i') }}
+                                            @else
+                                                <span class="text-gray-400">Belum login</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <div class="flex justify-center gap-2">
+                                                <a href="{{ route('admin.siswa.edit', $siswa->id) }}" class="inline-flex items-center p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('admin.siswa.delete', $siswa->id) }}" method="POST" class="inline">
+                                                    @csrf @method('DELETE')
+                                                    <button class="inline-flex items-center p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" onclick="return confirm('Yakin hapus siswa ini?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                            <i class="fas fa-users text-4xl mb-2"></i>
+                                            <p>Belum ada siswa terdaftar</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <!-- Pagination Siswa -->
+                        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                            {{ $siswas->withQueryString()->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Tambah Guru (inline) -->
+    <!-- Modal Tambah Guru -->
     <div class="modal fade" id="modalAddGuru" tabindex="-1" aria-labelledby="modalAddGuruLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalAddGuruLabel">Tambah Guru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content rounded-xl border-0 shadow-2xl">
+                <div class="modal-header bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
+                    <h5 class="modal-title font-bold" id="modalAddGuruLabel">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>
+                        Tambah Guru
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('admin.guru.store') }}" method="POST">
                     @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Nama Guru</label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                    <div class="modal-body p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Guru</label>
+                                <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                                <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
+                                <input type="password" name="password_confirmation" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    <div class="modal-footer p-6 pt-0 flex gap-3 justify-end">
+                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal Tambah Siswa (inline) -->
+    <!-- Modal Tambah Siswa -->
     <div class="modal fade" id="modalAddSiswa" tabindex="-1" aria-labelledby="modalAddSiswaLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="modalAddSiswaLabel">Tambah Siswa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content rounded-xl border-0 shadow-2xl">
+                <div class="modal-header bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-xl">
+                    <h5 class="modal-title font-bold" id="modalAddSiswaLabel">
+                        <i class="fas fa-user-graduate mr-2"></i>
+                        Tambah Siswa
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('admin.siswa.store') }}" method="POST">
                     @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">NIS</label>
-                            <input type="text" name="nis" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nama Siswa</label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Kelas</label>
-                            <input type="text" name="kelas" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                    <div class="modal-body p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NIS</label>
+                                <input type="text" name="nis" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Siswa</label>
+                                <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
+                                <input type="text" name="kelas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                                <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
+                                <input type="password" name="password_confirmation" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    <div class="modal-footer p-6 pt-0 flex gap-3 justify-end">
+                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    </div>
 </div>
+
 <script>
- document.addEventListener('DOMContentLoaded', function() {
-    // Cek parameter tab dari URL
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    // Check URL parameter for active tab
     const urlParams = new URLSearchParams(window.location.search);
     const activeTab = urlParams.get('tab') || 'guru';
 
-    // Tampilkan tab yang sesuai
-    const tabToActivate = document.querySelector(`button[data-bs-target="#${activeTab}"]`);
-    if (tabToActivate) {
-        const tab = new bootstrap.Tab(tabToActivate);
-        tab.show();
+    // Function to show tab
+    function showTab(targetId) {
+        // Hide all tab panes
+        tabPanes.forEach(pane => {
+            pane.classList.remove('show', 'active');
+            pane.classList.add('fade');
+        });
+
+        // Remove active state from all buttons
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+            button.classList.add('text-gray-500', 'border-transparent');
+            button.classList.remove('text-blue-600', 'border-blue-500');
+        });
+
+        // Show target tab pane
+        const targetPane = document.querySelector(targetId);
+        if (targetPane) {
+            targetPane.classList.remove('fade');
+            targetPane.classList.add('show', 'active');
+        }
+
+        // Activate target button
+        const targetButton = document.querySelector(`[data-target="${targetId}"]`);
+        if (targetButton) {
+            targetButton.classList.add('active', 'text-blue-600', 'border-blue-500');
+            targetButton.classList.remove('text-gray-500', 'border-transparent');
+        }
     }
 
-    // Tambahkan handler untuk menyimpan tab aktif saat tab diubah
-    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function(element) {
-        element.addEventListener('shown.bs.tab', function(e) {
-            const targetId = e.target.getAttribute('data-bs-target').replace('#', '');
+    // Initialize with active tab
+    showTab(`#${activeTab}`);
+
+    // Add click handlers
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            showTab(targetId);
+
+            // Update URL parameter
             const url = new URL(window.location);
-            url.searchParams.set('tab', targetId);
+            url.searchParams.set('tab', targetId.replace('#', ''));
             history.replaceState(null, '', url);
         });
     });
+
+    // Initial styles for tabs
+    tabButtons.forEach(button => {
+        if (!button.classList.contains('active')) {
+            button.classList.add('text-gray-500', 'border-transparent');
+        } else {
+            button.classList.add('text-blue-600', 'border-blue-500');
+        }
+    });
 });
-    </script>
+</script>
 @endsection

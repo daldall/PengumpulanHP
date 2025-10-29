@@ -10,6 +10,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\GuruExport;
 use App\Exports\SiswaExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Pengumpulan;
+use App\Models\Code;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -221,5 +225,150 @@ class AdminController extends Controller
         $siswas = User::where('role', 'siswa')->get();
         $pdf = PDF::loadView('exports.siswa-pdf', ['siswas' => $siswas]);
         return $pdf->download('data-siswa-'.date('Y-m-d').'.pdf');
+    }
+
+    /**
+     * Halaman Analytics Dashboard
+     */
+    public function analytics(Request $request)
+    {
+        $dateRange = $request->input('range', 'today');
+        
+        // Setup date range
+        $startDate = Carbon::today('Asia/Jakarta');
+        $endDate = Carbon::today('Asia/Jakarta');
+        
+        switch ($dateRange) {
+            case 'week':
+                $startDate = Carbon::now('Asia/Jakarta')->startOfWeek();
+                $endDate = Carbon::now('Asia/Jakarta')->endOfWeek();
+                break;
+            case 'month':
+                $startDate = Carbon::now('Asia/Jakarta')->startOfMonth();
+                $endDate = Carbon::now('Asia/Jakarta')->endOfMonth();
+                break;
+            case 'custom':
+                if ($request->has('start_date') && $request->has('end_date')) {
+                    $startDate = Carbon::parse($request->start_date)->startOfDay();
+                    $endDate = Carbon::parse($request->end_date)->endOfDay();
+                }
+                break;
+        }
+
+        // Total Users
+        $totalGuru = User::where('role', 'guru')->count();
+        $totalSiswa = User::where('role', 'siswa')->count();
+        $totalAdmin = User::where('role', 'admin')->count();
+
+        // Statistics Pengumpulan HP (dalam range tanggal)
+        $totalPengumpulan = Pengumpulan::whereBetween('waktu_input', [$startDate, $endDate])
+            ->where('status', 'dikumpulkan')
+            ->distinct('user_id')
+            ->count('user_id');
+
+        $totalPengambilan = Pengumpulan::whereBetween('waktu_input', [$startDate, $endDate])
+            ->where('status', 'diambil')
+            ->distinct('user_id')
+            ->count('user_id');
+
+        // Rata-rata waktu pengumpulan
+        $avgWaktuKumpul = Pengumpulan::whereBetween('waktu_input', [$startDate, $endDate])
+            ->where('status', 'dikumpulkan')
+            ->selectRaw('AVG(HOUR(waktu_input)) as avg_hour')
+            ->first();
+
+        // Siswa yang belum pernah mengumpulkan HP
+        $siswaBelumPernah = User::where('role', 'siswa')
+            ->whereDoesntHave('pengumpulan')
+            ->count();
+
+        // Daily Activity (7 hari terakhir untuk chart)
+        $dailyActivity = Pengumpulan::whereBetween('waktu_input', [
+                Carbon::now('Asia/Jakarta')->subDays(6)->startOfDay(),
+                Carbon::now('Asia/Jakarta')->endOfDay()
+            ])
+            ->selectRaw('DATE(waktu_input) as date, status, COUNT(*) as total')
+            ->groupBy('date', 'status')
+            ->get()
+            ->groupBy('date');
+
+        // Top 10 Siswa paling aktif
+        $topSiswa = User::where('role', 'siswa')
+            ->withCount(['pengumpulan' => function($q) use ($startDate, $endDate) {
+                $q->whereBetween('waktu_input', [$startDate, $endDate]);
+            }])
+            ->orderBy('pengumpulan_count', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Statistik per Kelas
+        $statsByKelas = User::where('role', 'siswa')
+            ->select('kelas', DB::raw('count(*) as total_siswa'))
+            ->withCount(['pengumpulan as kumpul_count' => function($q) use ($startDate, $endDate) {
+                $q->where('status', 'dikumpulkan')
+                  ->whereBetween('waktu_input', [$startDate, $endDate]);
+            }])
+            ->withCount(['pengumpulan as ambil_count' => function($q) use ($startDate, $endDate) {
+                $q->where('status', 'diambil')
+                  ->whereBetween('waktu_input', [$startDate, $endDate]);
+            }])
+            ->groupBy('kelas')
+            ->get();
+
+        // Device Statistics
+        $deviceStats = User::where('role', 'siswa')
+            ->whereNotNull('last_device')
+            ->select('last_device', DB::raw('count(*) as total'))
+            ->groupBy('last_device')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        // Browser Statistics
+        $browserStats = User::where('role', 'siswa')
+            ->whereNotNull('last_browser')
+            ->select('last_browser', DB::raw('count(*) as total'))
+            ->groupBy('last_browser')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        // Metode Input (QR vs Manual)
+        $metodeStats = Pengumpulan::whereBetween('waktu_input', [$startDate, $endDate])
+            ->select('metode', DB::raw('count(*) as total'))
+            ->groupBy('metode')
+            ->get();
+
+        // Late Collection (setelah jam 08:00)
+        $lateCollection = Pengumpulan::whereBetween('waktu_input', [$startDate, $endDate])
+            ->where('status', 'dikumpulkan')
+            ->whereTime('waktu_input', '>', '08:00:00')
+            ->count();
+
+        // Percentage calculations
+        $pengumpulanRate = $totalSiswa > 0 ? round(($totalPengumpulan / $totalSiswa) * 100, 1) : 0;
+        $pengambilanRate = $totalSiswa > 0 ? round(($totalPengambilan / $totalSiswa) * 100, 1) : 0;
+        $lateRate = $totalPengumpulan > 0 ? round(($lateCollection / $totalPengumpulan) * 100, 1) : 0;
+
+        return view('admin.analytics', compact(
+            'totalGuru',
+            'totalSiswa',
+            'totalAdmin',
+            'totalPengumpulan',
+            'totalPengambilan',
+            'avgWaktuKumpul',
+            'siswaBelumPernah',
+            'dailyActivity',
+            'topSiswa',
+            'statsByKelas',
+            'deviceStats',
+            'browserStats',
+            'metodeStats',
+            'lateCollection',
+            'pengumpulanRate',
+            'pengambilanRate',
+            'lateRate',
+            'dateRange',
+            'startDate',
+            'endDate'
+        ));
     }
 }
