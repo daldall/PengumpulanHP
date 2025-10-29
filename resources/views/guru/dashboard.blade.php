@@ -1,184 +1,209 @@
-@extends('layouts.app')
+@extends('layouts.app-tailwind')
 @include('include.navbar')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h4 class="fw-bold">Dashboard Guru</h4>
-                </div>
+<script src="https://cdn.tailwindcss.com"></script>
 
-                <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 flex items-center justify-center gap-3">
+                <i class="fas fa-chalkboard-teacher text-blue-600"></i>
+                Dashboard Guru
+            </h1>
+            <p class="mt-2 text-gray-600">Kelola sistem pengumpulan HP siswa</p>
+        </div>
+
+        @if (session('success'))
+            <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                    <span class="text-green-800">{{ session('success') }}</span>
+                </div>
+            </div>
+        @endif
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm font-medium">Total Siswa</p>
+                        <h3 class="text-4xl font-bold mt-2">{{ $totalSiswa }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <i class="fas fa-user-graduate text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100 text-sm font-medium">Sudah Kumpul</p>
+                        <h3 class="text-4xl font-bold mt-2">{{ $sudahKumpul }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <i class="fas fa-mobile-alt text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-yellow-100 text-sm font-medium">Sudah Ambil</p>
+                        <h3 class="text-4xl font-bold mt-2">{{ $sudahAmbil }}</h3>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <i class="fas fa-hand-holding text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {{-- Kode Kumpul --}}
+            <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                <h3 class="text-xl font-bold text-center text-gray-800 mb-6 flex items-center justify-center gap-2">
+                    <i class="fas fa-qrcode text-blue-600"></i>
+                    Kode Pengumpulan HP
+                </h3>
+                <div class="text-center">
+                    @if($kodeKumpul)
+                        @if($kodeKumpul->status === 'aktif')
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Kode pengumpulan sedang aktif
+                                </span>
+                            </div>
+                            <div class="space-y-3">
+                                <a href="{{ route('guru.show-code', $kodeKumpul->id) }}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Lihat Kode
+                                </a>
+
+                                {{-- Tutup Kode --}}
+                                <form method="POST" action="{{ route('guru.toggle-code', $kodeKumpul->id) }}" class="inline-block ml-2">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Tutup Kode
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Kode pengumpulan sudah ditutup
+                                </span>
+                            </div>
+                            <form method="POST" action="{{ route('guru.generate-code') }}">
+                                @csrf
+                                <input type="hidden" name="jenis" value="kumpul">
+                                <button type="submit" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Generate Kode Baru
+                                </button>
+                            </form>
+                        @endif
+                    @else
+                        <div class="mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Kode Kumpul belum dibuat
+                            </span>
+                        </div>
+                        <form method="POST" action="{{ route('guru.generate-code') }}">
+                            @csrf
+                            <input type="hidden" name="jenis" value="kumpul">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                <i class="fas fa-plus mr-2"></i>
+                                Generate Kode Kumpul
+                            </button>
+                        </form>
                     @endif
+                </div>
+            </div>
 
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="card bg-primary text-white">
-                                <div class="card-body">
-                                    <h5>Total Siswa</h5>
-                                    <h2>{{ $totalSiswa }}</h2>
-                                </div>
+            {{-- Kode Pengembalian --}}
+            <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                <h3 class="text-xl font-bold text-center text-gray-800 mb-6 flex items-center justify-center gap-2">
+                    <i class="fas fa-hand-holding text-green-600"></i>
+                    Kode Pengembalian HP
+                </h3>
+                <div class="text-center">
+                    @if($kodePengembalian)
+                        @if($kodePengembalian->status === 'aktif')
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Kode pengembalian sedang aktif
+                                </span>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-success text-white">
-                                <div class="card-body">
-                                    <h5>Sudah Kumpul</h5>
-                                    <h2>{{ $sudahKumpul }}</h2>
-                                </div>
+                            <div class="space-y-3">
+                                <a href="{{ route('guru.show-code', $kodePengembalian->id) }}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    Lihat Kode
+                                </a>
+
+                                {{-- Tutup Kode --}}
+                                <form method="POST" action="{{ route('guru.toggle-code', $kodePengembalian->id) }}" class="inline-block ml-2">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Tutup Kode
+                                    </button>
+                                </form>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-warning text-white">
-                                <div class="card-body">
-                                    <h5>Sudah Ambil</h5>
-                                    <h2>{{ $sudahAmbil }}</h2>
-                                </div>
+                        @else
+                            <div class="mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    Kode pengembalian sudah ditutup
+                                </span>
                             </div>
+                            <form method="POST" action="{{ route('guru.generate-code') }}">
+                                @csrf
+                                <input type="hidden" name="jenis" value="pengembalian">
+                                <button type="submit" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Generate Kode Baru
+                                </button>
+                            </form>
+                        @endif
+                    @else
+                        <div class="mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Kode Pengembalian belum dibuat
+                            </span>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        {{-- Kode Kumpul --}}
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header fw-bold text-center">Kode Pengumpulan HP</div>
-                                <div class="card-body text-center">
-                                    @if($kodeKumpul)
-                                        @if($kodeKumpul->status === 'aktif')
-                                            <p class="text-success">Kode pengumpulan sedang aktif</p>
-                                            <a href="{{ route('guru.show-code', $kodeKumpul->id) }}" class="btn btn-info">Lihat Kode</a>
-
-                                            {{-- Tutup Kode --}}
-                                            <form method="POST" action="{{ route('guru.toggle-code', $kodeKumpul->id) }}" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger">Tutup Kode</button>
-                                            </form>
-                                        @else
-                                            <p class="text-warning">Kode pengumpulan sudah ditutup</p>
-                                            <form method="POST" action="{{ route('guru.generate-code') }}">
-                                                @csrf
-                                                <input type="hidden" name="jenis" value="kumpul">
-                                                <button type="submit" class="btn btn-primary">Generate Kode Baru</button>
-                                            </form>
-                                        @endif
-                                    @else
-                                        <p class="text-danger">Kode Kumpul belum dibuat</p>
-                                        <form method="POST" action="{{ route('guru.generate-code') }}">
-                                            @csrf
-                                            <input type="hidden" name="jenis" value="kumpul">
-                                            <button type="submit" class="btn btn-primary">Generate Kode Kumpul</button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Kode Pengembalian --}}
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header fw-bold text-center">Kode Pengembalian HP</div>
-                                <div class="card-body text-center">
-                                    @if($kodePengembalian)
-                                        @if($kodePengembalian->status === 'aktif')
-                                            <p class="text-success">Kode pengembalian sedang aktif</p>
-                                            <a href="{{ route('guru.show-code', $kodePengembalian->id) }}" class="btn btn-info">Lihat Kode</a>
-
-                                            {{-- Tutup Kode --}}
-                                            <form method="POST" action="{{ route('guru.toggle-code', $kodePengembalian->id) }}" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger">Tutup Kode</button>
-                                            </form>
-                                        @else
-                                            <p class="text-warning">Kode pengembalian sudah ditutup</p>
-                                            <form method="POST" action="{{ route('guru.generate-code') }}">
-                                                @csrf
-                                                <input type="hidden" name="jenis" value="pengembalian">
-                                                <button type="submit" class="btn btn-success">Generate Kode Baru</button>
-                                            </form>
-                                        @endif
-                                    @else
-                                        <p class="text-danger">Kode Pengembalian belum dibuat</p>
-                                        <form method="POST" action="{{ route('guru.generate-code') }}">
-                                            @csrf
-                                            <input type="hidden" name="jenis" value="pengembalian">
-                                            <button type="submit" class="btn btn-success">Generate Kode Pengembalian</button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                        <form method="POST" action="{{ route('guru.generate-code') }}">
+                            @csrf
+                            <input type="hidden" name="jenis" value="pengembalian">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                <i class="fas fa-plus mr-2"></i>
+                                Generate Kode Pengembalian
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Modal Input Manual -->
-<div class="modal fade" id="inputManualModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Input Manual</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <form method="POST" action="{{ route('guru.input-manual') }}">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Pilih Siswa</label>
-                        <select name="user_id" class="form-control" required>
-                            <option value="">-- Pilih Siswa --</option>
-                            @foreach(App\Models\User::where('role', 'siswa')->get() as $siswa)
-                                <option value="{{ $siswa->id }}">{{ $siswa->nis }} - {{ $siswa->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" class="form-control" required>
-                            <option value="">-- Pilih Status --</option>
-                            <option value="dikumpulkan">Dikumpulkan</option>
-                            <option value="diambil">Diambil</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+        <!-- Action Buttons -->
+        <div class="text-center">
+            <a href="{{ route('guru.monitoring') }}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                <i class="fas fa-eye mr-3"></i>
+                Monitoring Real-time
+            </a>
         </div>
     </div>
 </div>
-<style>
-      /* --- PERBAIKAN UTAMA --- */
-      html {
-        overflow-y: scroll; /* Scrollbar selalu ada agar layout tidak geser saat pagination */
-    }
-
-    .card {
-        transition: all 0.2s ease-in-out;
-    }
-
-    .table > :not(caption) > * > * {
-        vertical-align: middle;
-    }
-
-    /* Tata letak tombol di header agar sejajar */
-    .action-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        align-items: center;
-    }
-</style>
 @endsection

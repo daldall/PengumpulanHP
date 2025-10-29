@@ -1,266 +1,154 @@
-@extends('layouts.app')
+@extends('layouts.app-tailwind')
 
 @section('content')
-<div class="landing-wrapper d-flex align-items-center justify-content-center">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card shadow-lg border-0 rounded-5 overflow-hidden"> <!-- Ubah border-radius -->
 
-                    <!-- Header -->
-                    <div class="text-center py-4 bg-gradient-primary text-white rounded-top-5">
-                        <img src="{{ asset('images/yasfat.png') }}" alt="Logo SMK Fatahillah" width="100" class="mb-3">
-                        <h1 class="fw-bold mb-0">Sistem Pengumpulan Handphone</h1>
-                        <p class="lead mb-0">SMK Fatahillah Cileungsi</p>
-                    </div>
+<style>
+/* Additional safety for text decorations */
+.no-underline * {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+</style>
 
-                    <!-- Konten utama -->
-                    <div class="card-body p-4 p-md-5">
-                        <div class="row align-items-center">
-                          <!-- Cara Penggunaan -->
-                        <div class="col-lg-6 mb-4 mb-lg-0">
-                            <h3 class="fw-bold mb-4 text-primary">Cara Penggunaan</h3>
-                            <p class="lead mb-4">Panduan singkat cara menggunakan sistem pengumpulan dan pengambilan HP di SMK Fatahillah.</p>
+<div class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center py-8 px-4 no-underline">
+    <div class="max-w-6xl mx-auto w-full">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-12 text-center">
+                <img src="{{ asset('images/yasfat.png') }}" alt="Logo SMK Fatahillah" class="w-24 h-24 mx-auto mb-6 object-contain">
+                <h1 class="text-4xl font-bold text-white mb-2 no-underline">Sistem Pengumpulan Handphone</h1>
+                <p class="text-xl text-blue-100 no-underline">SMK Fatahillah Cileungsi</p>
+            </div>
 
-                            <div class="features mb-4">
-                                <div class="feature-item">
-                                    <div class="feature-icon bg-primary bg-opacity-10 p-2 rounded-circle">
-                                        <i class="fas fa-sign-in-alt text-primary"></i>
-                                    </div>
-                                    <div class="feature-text">
-                                        <h5>Login Sistem</h5>
-                                        <small>Masuk menggunakan NIS</small>
-                                    </div>
+            <!-- Main Content -->
+            <div class="px-8 py-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Features Section -->
+                    <div class="space-y-8">
+                        <div class="text-center lg:text-left">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4 no-underline">Cara Penggunaan</h2>
+                            <p class="text-lg text-gray-600 no-underline">Panduan singkat cara menggunakan sistem pengumpulan dan pengambilan HP di SMK Fatahillah.</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-sign-in-alt text-blue-600 text-xl no-underline"></i>
                                 </div>
-
-                                <div class="feature-item">
-                                    <div class="feature-icon bg-success bg-opacity-10 p-2 rounded-circle">
-                                        <i class="fas fa-mobile-alt text-success"></i>
-                                    </div>
-                                    <div class="feature-text">
-                                        <h5>Serahkan/Ambil HP</h5>
-                                        <small>Scan QR code untuk menyerahkan atau mengambil HP</small>
-                                    </div>
-                                </div>
-
-                                <div class="feature-item">
-                                    <div class="feature-icon bg-info bg-opacity-10 p-2 rounded-circle">
-                                        <i class="fas fa-history text-info"></i>
-                                    </div>
-                                    <div class="feature-text">
-                                        <h5>Cek Riwayat</h5>
-                                        <small>Lihat histori pengumpulan dan pengambilan HP</small>
-                                    </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2 no-underline">Login Sistem</h3>
+                                    <p class="text-gray-600 no-underline">Masuk menggunakan NIS untuk akses sistem</p>
                                 </div>
                             </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-mobile-alt text-green-600 text-xl no-underline"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2 no-underline">Serahkan/Ambil HP</h3>
+                                    <p class="text-gray-600 no-underline">Scan QR code untuk menyerahkan atau mengambil HP</p>
+                                </div>
                             </div>
 
-                            <!-- Login Box -->
-                            <div class="col-lg-6">
-                                <div class="login-box p-4 bg-light rounded-4 shadow-sm">
-                                    <h4 class="text-center mb-4 fw-bold">Login Sistem</h4>
-
-                                    @if(session('error'))
-                                        <div class="alert alert-danger alert-dismissible fade show">
-                                            {{ session('error') }}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                        </div>
-                                    @endif
-
-                                    <form method="POST" action="{{ route('login') }}">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label for="login_id" class="form-label fw-bold">NIS / Email</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                                <input id="login_id" type="text" class="form-control @error('login_id') is-invalid @enderror"
-                                                    name="login_id" value="{{ old('login_id') }}" required autofocus
-                                                    placeholder="Masukkan NIS / Email">
-                                            </div>
-                                            @error('login_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="password" class="form-label fw-bold">Password</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                                                    name="password" required placeholder="Masukkan password">
-                                            </div>
-                                            @error('password')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                            <label class="form-check-label" for="remember">Ingat Saya</label>
-                                        </div>
-
-                                        <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary py-2 fw-bold">
-                                                <i class="fas fa-sign-in-alt me-2"></i> Masuk
-                                            </button>
-                                        </div>
-                                    </form>
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-history text-purple-600 text-xl no-underline"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2 no-underline">Cek Riwayat</h3>
+                                    <p class="text-gray-600 no-underline">Lihat histori pengumpulan dan pengambilan HP</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Footer -->
-                    <div class="card-footer bg-light text-center py-3 rounded-bottom-5">
-                        <p class="mb-0">© {{ date('Y') }} <strong>SMK Fatahillah</strong> - Sistem Pengumpulan HP</p>
+                    <!-- Login Form -->
+                    <div class="w-full">
+                        <div class="bg-gray-50 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
+                            <div class="text-center mb-8">
+                                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-lock text-white text-xl no-underline"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800 no-underline">Login Sistem</h3>
+                            </div>
+
+                            @if(session('error'))
+                                <div class="mb-6 bg-red-50 border-l-4 border-red-400 rounded-lg p-4">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-exclamation-circle text-red-500 text-xl no-underline"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-red-800 font-medium no-underline">{{ session('error') }}</p>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <button type="button" class="text-red-400 hover:text-red-600 no-underline" onclick="this.parentElement.parentElement.parentElement.style.display='none'">
+                                                <i class="fas fa-times no-underline"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                                @csrf
+                                
+                                <div>
+                                    <label for="login_id" class="block text-sm font-semibold text-gray-700 mb-2 no-underline">NIS / Email</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-user text-gray-400 no-underline"></i>
+                                        </div>
+                                        <input id="login_id" type="text" 
+                                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('login_id') border-red-500 @enderror no-underline"
+                                               name="login_id" value="{{ old('login_id') }}" required autofocus
+                                               placeholder="Masukkan NIS / Email"
+                                               style="text-decoration: none !important;">
+                                    </div>
+                                    @error('login_id')
+                                        <p class="mt-1 text-sm text-red-600 no-underline">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2 no-underline">Password</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-lock text-gray-400 no-underline"></i>
+                                        </div>
+                                        <input id="password" type="password" 
+                                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('password') border-red-500 @enderror no-underline"
+                                               name="password" required placeholder="Masukkan password"
+                                               style="text-decoration: none !important;">
+                                    </div>
+                                    @error('password')
+                                        <p class="mt-1 text-sm text-red-600 no-underline">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" id="remember" name="remember">
+                                    <label for="remember" class="ml-2 text-sm text-gray-700 no-underline">Ingat Saya</label>
+                                </div>
+
+                                <button type="submit" class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center no-underline">
+                                    <i class="fas fa-sign-in-alt mr-3 no-underline"></i>
+                                    <span class="no-underline">Masuk</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-100 px-8 py-6 text-center border-t border-gray-200">
+                <p class="text-gray-600 no-underline">© {{ date('Y') }} <span class="font-semibold text-gray-800 no-underline">SMK Fatahillah</span> - Sistem Pengumpulan HP</p>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-/* ----- GLOBAL ----- */
-.landing-wrapper {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0d47a1, #6200ea);
-    padding: 20px 10px;
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(to right, #0d47a1, #1976d2);
-}
-
-.login-box {
-    transition: all 0.3s ease;
-}
-
-.login-box:hover {
-    transform: translateY(-5px);
-}
-
-/* ----- FEATURES ----- */
-.features {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.feature-item .feature-icon {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.feature-item .feature-text h5 {
-    margin: 0;
-    font-size: 1rem;
-}
-
-.feature-item .feature-text small {
-    display: block;
-    color: #6c757d;
-}
-
-/* ----- RESPONSIVE ----- */
-
-/* Tablet */
-@media (max-width: 991px) {
-    .card-body .row.align-items-center {
-        flex-direction: column-reverse;
-        text-align: center;
-        gap: 20px;
-    }
-
-    .card-body .col-lg-6 {
-        width: 100%;
-        border-radius: 15px;
-    }
-
-    .feature-item {
-        justify-content: center;
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .feature-item .feature-text h5 {
-        font-size: 1rem;
-    }
-
-    .feature-item .feature-text small {
-        font-size: 0.85rem;
-    }
-
-    .feature-icon {
-        margin-bottom: 8px;
-    }
-}
-
-/* HP / Small Devices */
-@media (max-width: 576px) {
-    .card-body {
-        padding: 15px !important;
-    }
-
-    h3.fw-bold {
-        font-size: 1.3rem;
-    }
-
-    .lead {
-        font-size: 0.9rem;
-    }
-
-    .feature-item .feature-text h5 {
-        font-size: 0.95rem;
-    }
-
-    .feature-item .feature-text small {
-        font-size: 0.8rem;
-    }
-
-    .feature-icon {
-        width: 30px;
-        height: 30px;
-    }
-
-    .feature-icon i {
-        font-size: 14px;
-    }
-
-    .login-box {
-        padding: 15px !important;
-    }
-
-    .login-box h4 {
-        font-size: 1.2rem;
-    }
-
-    .input-group-text i {
-        font-size: 14px;
-    }
-
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.375rem 0.75rem;
-    }
-}
-
-/* Sangat kecil */
-@media (max-width: 400px) {
-    .card-footer {
-        padding: 10px 5px;
-        font-size: 0.8rem;
-    }
-}
-</style>
 @endsection
