@@ -70,31 +70,28 @@
             <div class="tab-content p-6">
 
                 <!-- GURU -->
-                <div class="tab-pane fade show active" id="guru">
+                <div class="tab-pane" id="guru" style="display: none;">
                     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
                         <h4 class="text-lg font-bold text-gray-800 mb-0">Daftar Guru</h4>
                         <div class="flex flex-wrap gap-3">
                             <!-- Dropdown Export -->
-                            <div class="relative">
-                                <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="relative dropdown-container">
+                                <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dropdown-toggle" onclick="toggleDropdown(this)">
                                     <i class="fas fa-file-export mr-2"></i> Export
+                                    <i class="fas fa-chevron-down ml-2 text-sm"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.guru.export-excel') }}">
-                                            <i class="fas fa-file-excel text-green-600 mr-2"></i> Excel
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.guru.export-pdf') }}">
-                                            <i class="fas fa-file-pdf text-red-600 mr-2"></i> PDF
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                    <a class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-t-lg" href="{{ route('admin.guru.export-excel') }}">
+                                        <i class="fas fa-file-excel text-green-600 mr-2"></i> Excel
+                                    </a>
+                                    <a class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-b-lg" href="{{ route('admin.guru.export-pdf') }}">
+                                        <i class="fas fa-file-pdf text-red-600 mr-2"></i> PDF
+                                    </a>
+                                </div>
                             </div>
 
                             <!-- Tombol Tambah -->
-                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" data-bs-toggle="modal" data-bs-target="#modalAddGuru">
+                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onclick="openModal('modalAddGuru')">
                                 <i class="fas fa-plus mr-2"></i> Tambah Guru
                             </button>
                         </div>
@@ -144,13 +141,13 @@
                         </table>
                         <!-- Pagination Guru -->
                         <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                            {{ $gurus->withQueryString()->links() }}
+                            {{ $gurus->appends(['tab' => 'guru'])->links('pagination.tailwind') }}
                         </div>
                     </div>
                 </div>
 
                 <!-- SISWA -->
-                <div class="tab-pane fade" id="siswa">
+                <div class="tab-pane" id="siswa" style="display: none;">
                     <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
                         <h4 class="text-lg font-bold text-gray-800 mb-0">Daftar Siswa</h4>
                         <div class="flex flex-wrap gap-3">
@@ -164,26 +161,23 @@
                             </form>
 
                             <!-- Dropdown Export -->
-                            <div class="relative">
-                                <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dropdown-toggle" data-bs-toggle="dropdown">
+                            <div class="relative dropdown-container">
+                                <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors dropdown-toggle" onclick="toggleDropdown(this)">
                                     <i class="fas fa-file-export mr-2"></i> Export
+                                    <i class="fas fa-chevron-down ml-2 text-sm"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.siswa.export-excel') }}">
-                                            <i class="fas fa-file-excel text-green-600 mr-2"></i> Excel
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100" href="{{ route('admin.siswa.export-pdf') }}">
-                                            <i class="fas fa-file-pdf text-red-600 mr-2"></i> PDF
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                    <a class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-t-lg" href="{{ route('admin.siswa.export-excel') }}">
+                                        <i class="fas fa-file-excel text-green-600 mr-2"></i> Excel
+                                    </a>
+                                    <a class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-b-lg" href="{{ route('admin.siswa.export-pdf') }}">
+                                        <i class="fas fa-file-pdf text-red-600 mr-2"></i> PDF
+                                    </a>
+                                </div>
                             </div>
 
                             <!-- Tombol Tambah -->
-                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" data-bs-toggle="modal" data-bs-target="#modalAddSiswa">
+                            <button class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors" onclick="openModal('modalAddSiswa')">
                                 <i class="fas fa-plus mr-2"></i> Tambah Siswa
                             </button>
                         </div>
@@ -258,7 +252,7 @@
                         </table>
                         <!-- Pagination Siswa -->
                         <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                            {{ $siswas->withQueryString()->links() }}
+                            {{ $siswas->appends(['tab' => 'siswa', 'search' => request('search')])->links('pagination.tailwind') }}
                         </div>
                     </div>
                 </div>
@@ -267,19 +261,21 @@
     </div>
 
     <!-- Modal Tambah Guru -->
-    <div class="modal fade" id="modalAddGuru" tabindex="-1" aria-labelledby="modalAddGuruLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content rounded-xl border-0 shadow-2xl">
-                <div class="modal-header bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
-                    <h5 class="modal-title font-bold" id="modalAddGuruLabel">
+    <div class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" id="modalAddGuru">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-screen overflow-y-auto">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl p-6 flex justify-between items-center">
+                    <h5 class="font-bold text-lg">
                         <i class="fas fa-chalkboard-teacher mr-2"></i>
                         Tambah Guru
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="text-white hover:text-gray-200" onclick="closeModal('modalAddGuru')">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
                 </div>
                 <form action="{{ route('admin.guru.store') }}" method="POST">
                     @csrf
-                    <div class="modal-body p-6">
+                    <div class="p-6">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Guru</label>
@@ -299,8 +295,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer p-6 pt-0 flex gap-3 justify-end">
-                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors" data-bs-dismiss="modal">Batal</button>
+                    <div class="p-6 pt-0 flex gap-3 justify-end">
+                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors" onclick="closeModal('modalAddGuru')">Batal</button>
                         <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Simpan</button>
                     </div>
                 </form>
@@ -309,19 +305,21 @@
     </div>
 
     <!-- Modal Tambah Siswa -->
-    <div class="modal fade" id="modalAddSiswa" tabindex="-1" aria-labelledby="modalAddSiswaLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content rounded-xl border-0 shadow-2xl">
-                <div class="modal-header bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-xl">
-                    <h5 class="modal-title font-bold" id="modalAddSiswaLabel">
+    <div class="fixed inset-0 bg-black bg-opacity-50 hidden z-50" id="modalAddSiswa">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-screen overflow-y-auto">
+                <div class="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-t-xl p-6 flex justify-between items-center">
+                    <h5 class="font-bold text-lg">
                         <i class="fas fa-user-graduate mr-2"></i>
                         Tambah Siswa
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="text-white hover:text-gray-200" onclick="closeModal('modalAddSiswa')">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
                 </div>
                 <form action="{{ route('admin.siswa.store') }}" method="POST">
                     @csrf
-                    <div class="modal-body p-6">
+                    <div class="p-6">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">NIS</label>
@@ -345,8 +343,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer p-6 pt-0 flex gap-3 justify-end">
-                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors" data-bs-dismiss="modal">Batal</button>
+                    <div class="p-6 pt-0 flex gap-3 justify-end">
+                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors" onclick="closeModal('modalAddSiswa')">Batal</button>
                         <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Simpan</button>
                     </div>
                 </form>
@@ -371,8 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showTab(targetId) {
         // Hide all tab panes
         tabPanes.forEach(pane => {
-            pane.classList.remove('show', 'active');
-            pane.classList.add('fade');
+            pane.style.display = 'none';
         });
 
         // Remove active state from all buttons
@@ -385,8 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show target tab pane
         const targetPane = document.querySelector(targetId);
         if (targetPane) {
-            targetPane.classList.remove('fade');
-            targetPane.classList.add('show', 'active');
+            targetPane.style.display = 'block';
         }
 
         // Activate target button
@@ -421,6 +417,73 @@ document.addEventListener('DOMContentLoaded', function() {
             button.classList.add('text-blue-600', 'border-blue-500');
         }
     });
+});
+
+// Modal functions
+function openModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+    document.body.style.overflow = 'auto';
+
+    // Reset form if exists
+    const form = document.querySelector(`#${modalId} form`);
+    if (form) {
+        form.reset();
+    }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('bg-black') && e.target.classList.contains('bg-opacity-50')) {
+        const modals = document.querySelectorAll('.fixed.inset-0.z-50');
+        modals.forEach(modal => {
+            if (!modal.classList.contains('hidden')) {
+                closeModal(modal.id);
+            }
+        });
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modals = document.querySelectorAll('.fixed.inset-0.z-50');
+        modals.forEach(modal => {
+            if (!modal.classList.contains('hidden')) {
+                closeModal(modal.id);
+            }
+        });
+    }
+});
+
+// Dropdown functionality
+function toggleDropdown(button) {
+    const dropdown = button.nextElementSibling;
+    const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+    // Close all other dropdowns
+    allDropdowns.forEach(menu => {
+        if (menu !== dropdown) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    // Toggle current dropdown
+    dropdown.classList.toggle('hidden');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown-container')) {
+        const dropdowns = document.querySelectorAll('.dropdown-menu');
+        dropdowns.forEach(dropdown => {
+            dropdown.classList.add('hidden');
+        });
+    }
 });
 </script>
 @endsection
