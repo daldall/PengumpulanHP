@@ -13,7 +13,7 @@
 
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 py-8 no-underline">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <!-- Header -->
         <div class="mb-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -27,7 +27,7 @@
                     </p>
                     <div class="w-24 h-1 bg-gradient-to-r from-purple-400 to-indigo-400 mt-4 rounded-full"></div>
                 </div>
-                
+
                 <div class="flex flex-wrap gap-3">
                     <!-- Export Dropdown -->
                     <div class="relative group">
@@ -52,7 +52,7 @@
 
                     <!-- Search -->
                     <form action="{{ route('guru.monitoring') }}" method="GET" class="flex gap-2">
-                        <input type="text" name="search" value="{{ request('search') }}" 
+                        <input type="text" name="search" value="{{ request('search') }}"
                                class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 no-underline"
                                placeholder="Cari NIS / Nama..."
                                style="text-decoration: none !important;">
@@ -60,7 +60,7 @@
                             <i class="fas fa-search no-underline"></i>
                         </button>
                     </form>
-                    
+
                     <a href="{{ route('guru.dashboard') }}" class="inline-flex items-center px-6 py-3 bg-white border border-gray-300 rounded-lg shadow-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200 no-underline" style="text-decoration: none !important;">
                         <i class="fas fa-arrow-left mr-2 no-underline"></i><span class="no-underline">Kembali</span>
                     </a>
@@ -113,7 +113,7 @@
                     <span class="no-underline">Data Status Siswa</span>
                 </h3>
             </div>
-            
+
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-gray-50 border-b border-gray-200">
@@ -188,7 +188,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             @if($siswa->hasPages())
             <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
                 <div class="flex items-center justify-center">
@@ -229,7 +229,7 @@
                         @endif
                     </nav>
                 </div>
-                
+
                 {{-- Pagination Info --}}
                 <div class="flex justify-center mt-3">
                     <span class="text-sm text-gray-600 no-underline">
@@ -246,7 +246,7 @@
 function toggleDropdown(dropdownId) {
     const dropdown = document.getElementById(dropdownId);
     dropdown.classList.toggle('hidden');
-    
+
     // Close dropdown when clicking outside
     document.addEventListener('click', function(event) {
         if (!dropdown.contains(event.target) && !event.target.closest('button')) {
